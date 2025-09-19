@@ -104,8 +104,8 @@
                             <div class="products-grid">
                                 <% products.forEach(product => { %>
                                     <a href="/product/<%= product.slug %>" class="card product-card product-card-link">
-                                        <% if (product.image?.data) { %>
-                                            <img src="<%= STRAPI_URL %><%= product.image.data.attributes.url %>" alt="<%= product.name %>" class="card-img">
+                                        <% if (product.image) { %>
+                                            <img src="<%= product.image.url %>" alt="<%= product.name %>" class="card-img">
                                         <% } else { %>
                                             <div class="card-img card-img-placeholder">
                                                 <i class="fas fa-image"></i>

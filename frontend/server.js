@@ -312,6 +312,27 @@ app.get('/store', async (req, res) => {
     }
 });
 
+// Image proxy route
+app.get('/uploads/*', async (req, res) => {
+    try {
+        const imagePath = req.path; // This will be /uploads/filename.jpg
+        const strapiImageUrl = `${STRAPI_URL}${imagePath}`;
+
+        const response = await axios.get(strapiImageUrl, {
+            responseType: 'stream'
+        });
+
+        // Forward the content type
+        res.set('Content-Type', response.headers['content-type']);
+
+        // Pipe the image data
+        response.data.pipe(res);
+    } catch (error) {
+        console.error('Error proxying image:', error.message);
+        res.status(404).send('Image not found');
+    }
+});
+
 // Start server
 app.listen(PORT, () => {
     console.log(`Frontend server running on port ${PORT}`);

@@ -1,191 +1,266 @@
-# Packaging Equipment Website with Strapi CMS
+# Packaging Equipment E-commerce Website
 
-A modern, professional website for packaging equipment companies built with Strapi CMS and a custom frontend. Features a clean admin interface for content management and a beautiful, responsive public website.
+A professional, modern e-commerce website for packaging equipment companies built with Strapi v5 CMS and Express.js frontend. Features comprehensive product catalog, category filtering, and fully configurable site settings through a clean admin interface.
 
 ## 🚀 Features
 
-- **Strapi CMS Backend**: Professional admin panel for easy content management
-- **Modern Frontend**: Clean, flat design with responsive layout
-- **PostgreSQL Database**: Reliable data storage
-- **Docker Setup**: Easy deployment and development
-- **Content Types**: Pre-configured for packaging equipment (Categories, Products)
-- **Image Management**: Upload and manage product images
-- **SEO Friendly**: Clean URLs and proper meta tags
+### Content Management
+- **Strapi v5 CMS**: Latest version with improved performance and features
+- **Configurable Site Settings**: Phone, email, business hours, company info - all manageable from CMS
+- **Dynamic Pages**: Create and manage custom pages with navigation/footer visibility controls
+- **Product Catalog**: Full-featured product management with categories, images, and rich descriptions
+- **Category Management**: Organize products with custom categories and images
+- **SEO Optimized**: Meta descriptions, keywords, and clean URLs
+
+### Frontend
+- **Modern Design**: Clean, professional appearance with modular CSS architecture
+- **Responsive Layout**: Mobile-first design that works on all devices
+- **Store with Filtering**: Advanced sidebar filtering by category with search functionality
+- **Configurable Content**: All contact info, company details, and marketing copy managed via CMS
+- **Performance Optimized**: Modular CSS, efficient API calls, and Docker containerization
+
+### Technical Stack
+- **Backend**: Strapi v5 CMS with PostgreSQL database
+- **Frontend**: Express.js with EJS templating
+- **Styling**: Modular CSS with CSS custom properties
+- **Infrastructure**: Docker Compose for easy deployment
+- **APIs**: RESTful APIs with population and filtering support
 
 ## 📁 Project Structure
 
 ```
-├── docker-compose.yml          # Docker services configuration
-├── Dockerfile                  # Strapi container
+├── docker-compose.yml          # Docker services (Strapi, Frontend, PostgreSQL)
+├── Dockerfile                  # Strapi container configuration
 ├── src/                       # Strapi backend
-│   └── api/                   # API endpoints
-│       ├── category/          # Category content type
-│       └── product/           # Product content type
-├── frontend/                  # Frontend application
-│   ├── server.js             # Express server
+│   └── api/                   # API endpoints and content types
+│       ├── category/          # Product categories
+│       ├── product/           # Products catalog
+│       ├── page/             # Custom pages (About, Contact, etc.)
+│       └── site-setting/     # Global site configuration
+├── frontend/                  # Express.js frontend application
+│   ├── server.js             # Main server with route handling
 │   ├── views/                # EJS templates
-│   └── public/               # Static assets
+│   │   ├── index.ejs         # Homepage
+│   │   ├── store.ejs         # Product catalog with filtering
+│   │   ├── product.ejs       # Individual product pages
+│   │   ├── category.ejs      # Category listing pages
+│   │   └── partials/         # Reusable components
+│   └── public/css/           # Modular CSS architecture
+│       ├── base/             # Variables and reset styles
+│       ├── layout/           # Grid and layout systems
+│       ├── components/       # Button, card, header, footer styles
+│       └── pages/            # Page-specific styles
+├── scripts/                   # Setup and utility scripts
+│   ├── create-site-settings.js  # Populate initial site settings
+│   ├── create-pages.js       # Create default pages
+│   └── strapi-utils.js       # Helper functions
 └── config/                   # Strapi configuration
 ```
 
 ## 🛠️ Quick Start
 
 ### Prerequisites
-- Docker and Docker Compose installed
+- Docker and Docker Compose
+- Node.js 18+ (for development)
 
-### 1. Start the Application
+### 1. Clone and Start
 
 ```bash
+git clone https://github.com/aronpammer/packaging-webshop.git
+cd packaging-webshop
+
 # Start all services
 docker-compose up -d
 
-# Wait for services to be ready (about 2-3 minutes)
+# Wait for services to initialize (2-3 minutes)
 ```
 
-### 2. Access the Applications
+### 2. Access Applications
 
 - **Public Website**: http://localhost:3000
-- **Strapi Admin**: http://localhost:1337/admin
+- **Strapi Admin Panel**: http://localhost:1337/admin
 
-### 3. Set Up Admin User
+### 3. Initial Setup
 
-1. Go to http://localhost:1337/admin
-2. Create your first admin user
-3. Log in to access the content management system
+1. **Create Admin User**: Visit http://localhost:1337/admin and create your admin account
+2. **Run Setup Scripts**: Populate initial content and settings:
+   ```bash
+   # Add your Strapi API token to scripts/create-site-settings.js
+   node scripts/create-site-settings.js
+   node scripts/create-pages.js
+   ```
 
-## 📝 Content Management
+## 📊 Content Management Guide
 
-### Adding Categories
+### Site Settings Configuration
+Navigate to **Content Manager** → **Site Setting** to configure:
+- **Contact Information**: Phone, email, address, business hours
+- **Company Details**: Name, description, copyright text
+- **SEO Settings**: Meta description, keywords
+- **Product Page Content**: Contact section title and description
 
-1. Go to **Content Manager** → **Categories**
-2. Click **Create new entry**
-3. Fill in:
-   - **Name**: Category name (e.g., "Plastic Strapping")
-   - **Slug**: Auto-generated URL slug
-   - **Description**: Brief description
-   - **Image**: Upload category image
-   - **Sort Order**: Display order (lower = first)
-4. **Publish** the category
+### Managing Products
+1. **Categories First**: Create product categories with names, descriptions, and images
+2. **Add Products**:
+   - Basic info: name, description, category
+   - Images: main product image plus gallery
+   - Settings: featured status, sort order
+   - SEO: custom slug and meta description
 
-### Adding Products
+### Custom Pages
+Create pages like About Us, Contact, Terms of Service:
+- **Navigation Control**: `showInNavigation` - appears in main menu
+- **Footer Control**: `showInFooter` - appears in footer links
+- **Ordering**: Use `navigationOrder` and `footerOrder` for positioning
 
-1. Go to **Content Manager** → **Products**
-2. Click **Create new entry**
-3. Fill in product details:
-   - **Name**: Product name
-   - **Slug**: Auto-generated URL slug
-   - **Short Description**: Brief summary for product cards
-   - **Description**: Full product description (rich text)
-   - **Image**: Main product image
-   - **Gallery**: Additional product images
-   - **Category**: Select from existing categories
-   - **Featured**: Check to show on homepage
-   - **Sort Order**: Display order within category
-4. **Publish** the product
+### Category Management
+- Upload category images for better visual appeal
+- Use sort order to control homepage display sequence
+- Link products to categories for automatic filtering
 
-## 🎨 Customization
+## 🎨 Design System
 
-### Default Categories
+### CSS Architecture
+- **Modular Structure**: Separated concerns (base, layout, components, pages)
+- **CSS Custom Properties**: Consistent colors, spacing, and transitions
+- **Responsive Design**: Mobile-first with clean breakpoints
+- **Component-Based**: Reusable button, card, and layout styles
 
-The system is pre-configured for packaging equipment with these categories:
-- Plastic Strapping
-- Steel Strapping
-- Film Wrapping
-- Adhesive Technology
-- Rubber Binding
-- Used Equipment
-
-### Styling
-
-- Frontend styles: `frontend/public/css/style.css`
-- Modern flat design with CSS variables
-- Responsive grid system
-- Font Awesome icons included
-
-### Adding Custom Content Types
-
-1. In Strapi admin, go to **Content-Types Builder**
-2. Create new Collection Type
-3. Add fields as needed
-4. Save and restart the server
+### Key Design Principles
+- **Clean & Professional**: Minimal design focused on products
+- **User-Friendly**: Intuitive navigation and clear calls-to-action
+- **Performance**: Optimized loading and smooth interactions
+- **Accessibility**: Semantic HTML and proper contrast ratios
 
 ## 🔧 Development
 
-### Local Development (Strapi Only)
-
+### Local Development
 ```bash
-# Install dependencies
+# Backend only
 npm install
-
-# Start in development mode
 npm run develop
-```
 
-### Frontend Development
-
-```bash
+# Frontend development
 cd frontend
 npm install
-npm run dev
+npm start
+
+# Watch mode for both
+docker-compose up
 ```
 
-### Database Access
+### API Integration
+The frontend connects to Strapi APIs:
+```javascript
+// Site settings for all pages
+const siteSettings = await fetchFromStrapi('/site-setting?populate=*');
 
+// Products with category filtering
+const products = await fetchFromStrapi('/products?populate=*&filters[category][slug][$eq]=' + categorySlug);
+
+// Navigation pages
+const navPages = await fetchFromStrapi('/pages?filters[showInNavigation][$eq]=true');
+```
+
+### Database Management
 ```bash
-# Connect to PostgreSQL
+# Access PostgreSQL
 docker-compose exec db psql -U strapi -d strapi
 
 # Useful commands
-\dt                    # List tables
-\d+ categories         # Describe categories table
-SELECT * FROM categories;
+\l                           # List databases
+\dt                          # List tables
+SELECT * FROM site_settings; # View site configuration
 ```
 
-## 🔐 API Access
+## 🚀 Production Deployment
 
-### Public Endpoints
-
-- Categories: `http://localhost:1337/api/categories?populate=*`
-- Products: `http://localhost:1337/api/products?populate=*`
-- Featured Products: `http://localhost:1337/api/products?filters[featured][$eq]=true&populate=*`
-
-### Authentication
-
-Admin endpoints require JWT authentication. See Strapi documentation for API authentication.
-
-## 🚢 Production Deployment
-
-### Environment Variables
-
-Create `.env` file:
-
+### Environment Configuration
+Create `.env` file with production settings:
 ```bash
 NODE_ENV=production
 DATABASE_CLIENT=postgres
-DATABASE_HOST=your-db-host
+DATABASE_HOST=your-production-db-host
 DATABASE_PORT=5432
-DATABASE_NAME=strapi
-DATABASE_USERNAME=strapi
-DATABASE_PASSWORD=your-secure-password
-JWT_SECRET=your-jwt-secret
-ADMIN_JWT_SECRET=your-admin-jwt-secret
+DATABASE_NAME=strapi_prod
+DATABASE_USERNAME=strapi_user
+DATABASE_PASSWORD=secure_password_here
+JWT_SECRET=your-secure-jwt-secret-minimum-32-chars
+ADMIN_JWT_SECRET=your-admin-jwt-secret-minimum-32-chars
 APP_KEYS=key1,key2,key3,key4
+STRAPI_ADMIN_BACKEND_URL=https://your-admin-domain.com
 ```
 
-### Security Considerations
+### Security Checklist
+- [ ] Change all default passwords
+- [ ] Generate secure JWT secrets (32+ characters)
+- [ ] Configure HTTPS/SSL certificates
+- [ ] Set up proper CORS policies
+- [ ] Enable rate limiting
+- [ ] Configure database backups
+- [ ] Set up monitoring and logging
 
-- Change default database passwords
-- Use secure JWT secrets
-- Enable HTTPS in production
-- Configure proper CORS settings
-- Set up proper backup strategy
+### Deployment Steps
+1. **Build Images**: `docker-compose build --no-cache`
+2. **Deploy**: Use your preferred container orchestration (Docker Swarm, Kubernetes, etc.)
+3. **Database Migration**: Run initial setup scripts
+4. **SSL Setup**: Configure reverse proxy (nginx, Traefik)
+5. **Monitoring**: Set up health checks and logging
 
-## 📞 Support
+## 🔐 API Reference
 
-For Strapi-specific questions:
-- [Strapi Documentation](https://docs.strapi.io)
-- [Strapi Community](https://discord.strapi.io)
+### Public Endpoints
+```bash
+# Get all categories with images
+GET /api/categories?populate=*
+
+# Get products by category
+GET /api/products?populate=*&filters[category][slug][$eq]=steel-strapping
+
+# Get featured products for homepage
+GET /api/products?populate=*&filters[featured][$eq]=true
+
+# Get site settings
+GET /api/site-setting?populate=*
+
+# Get navigation pages
+GET /api/pages?populate=*&filters[showInNavigation][$eq]=true
+```
+
+### Authentication
+Admin API access requires Bearer token authentication. Generate API tokens in Strapi admin under **Settings** → **API Tokens**.
+
+## 📈 Customization Guide
+
+### Adding New Content Types
+1. Use **Content-Types Builder** in Strapi admin
+2. Create fields with proper relationships
+3. Update frontend templates if needed
+4. Add API calls in `server.js`
+
+### Styling Customizations
+- **Colors**: Modify CSS custom properties in `/css/base/variables.css`
+- **Layout**: Adjust grid systems in `/css/layout/`
+- **Components**: Update button, card styles in `/css/components/`
+- **Pages**: Customize page-specific styles in `/css/pages/`
+
+### Feature Extensions
+- **Search**: Implement full-text search with Strapi's built-in search
+- **E-commerce**: Add cart functionality and payment integration
+- **Multi-language**: Use Strapi's i18n plugin for internationalization
+- **Analytics**: Integrate Google Analytics or similar tracking
+
+## 📞 Support & Resources
+
+- **Strapi Documentation**: https://docs.strapi.io/
+- **Express.js Guide**: https://expressjs.com/
+- **Docker Compose**: https://docs.docker.com/compose/
+- **EJS Templating**: https://ejs.co/
 
 ## 📄 License
 
-MIT License - see package.json for details
+MIT License - Open source and free to use for commercial projects.
+
+---
+
+Built with ❤️ for packaging equipment professionals. Perfect for manufacturers, distributors, and service providers in the industrial packaging industry.

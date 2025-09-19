@@ -57,10 +57,14 @@
       "default": 0
     },
     "specifications": {
-      "type": "json"
+      "type": "component",
+      "repeatable": true,
+      "component": "product.specification"
     },
     "features": {
-      "type": "json"
+      "type": "component",
+      "repeatable": true,
+      "component": "product.feature"
     },
     "applications": {
       "type": "json"

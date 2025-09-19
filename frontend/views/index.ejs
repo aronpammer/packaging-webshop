@@ -33,8 +33,8 @@
                 <% categories.forEach((category) => { %>
                     <a href="/category/<%= category.slug %>" class="category-card-simple">
                         <div class="category-image-container">
-                            <% if (category.image?.data) { %>
-                                <img src="<%= STRAPI_URL %><%= category.image.data.attributes.url %>" alt="<%= category.name %>" class="category-image">
+                            <% if (category.image) { %>
+                                <img src="<%= category.image.url %>" alt="<%= category.name %>" class="category-image">
                             <% } else { %>
                                 <div class="category-no-image">
                                     <div class="no-image-icon">📷</div>
@@ -64,8 +64,8 @@
                 <% featuredProducts.forEach(product => { %>
                     <div class="product-card-modern">
                         <div class="product-image-wrapper">
-                            <% if (product.image?.data) { %>
-                                <img src="<%= STRAPI_URL %><%= product.image.data.attributes.url %>" alt="<%= product.name %>" class="product-image-modern">
+                            <% if (product.image) { %>
+                                <img src="<%= product.image.url %>" alt="<%= product.name %>" class="product-image-modern">
                             <% } else { %>
                                 <div class="product-image-placeholder">
                                     <i class="fas fa-image"></i>

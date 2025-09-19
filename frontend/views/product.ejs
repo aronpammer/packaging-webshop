@@ -28,8 +28,8 @@
                 <!-- Product Image -->
                 <div class="product-image-section">
                     <div class="product-image-container">
-                        <% if (product.image?.data) { %>
-                            <img src="<%= STRAPI_URL %><%= product.image.data.attributes.url %>" alt="<%= product.name %>" class="product-main-image">
+                        <% if (product.image) { %>
+                            <img src="<%= product.image.url %>" alt="<%= product.name %>" class="product-main-image">
                         <% } else { %>
                             <div class="product-image-placeholder">
                                 <i class="fas fa-image"></i>
@@ -87,6 +87,48 @@
                 <div class="description-text">
                     <%- product.description %>
                 </div>
+            </div>
+        </div>
+    </section>
+    <% } %>
+
+    <!-- Product Features -->
+    <% if (product.features && product.features.length > 0) { %>
+    <section class="product-features">
+        <div class="container">
+            <h2 class="section-title">Key Features</h2>
+            <div class="features-grid">
+                <% product.features.forEach(function(feature) { %>
+                <div class="feature-item">
+                    <h3 class="feature-title">
+                        <i class="fas fa-check-circle"></i>
+                        <%= feature.title %>
+                    </h3>
+                    <% if (feature.description) { %>
+                        <p class="feature-description"><%= feature.description %></p>
+                    <% } %>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+    </section>
+    <% } %>
+
+    <!-- Product Specifications -->
+    <% if (product.specifications && product.specifications.length > 0) { %>
+    <section class="product-specifications">
+        <div class="container">
+            <h2 class="section-title">Technical Specifications</h2>
+            <div class="specifications-table">
+                <% product.specifications.forEach(function(spec) { %>
+                <div class="spec-row">
+                    <div class="spec-label"><%= spec.label %></div>
+                    <div class="spec-value">
+                        <%= spec.value %>
+                        <% if (spec.unit) { %> <%= spec.unit %><% } %>
+                    </div>
+                </div>
+                <% }); %>
             </div>
         </div>
     </section>
