@@ -1,0 +1,35 @@
+<!-- Header -->
+<header class="header">
+    <div class="header-top">
+        <div class="container">
+            <div class="row">
+                <div class="contact-info">
+                    <span><i class="fas fa-phone"></i> <%= siteSettings.phone %></span>
+                    <span><i class="fas fa-envelope"></i> <%= siteSettings.email %></span>
+                    <span><i class="fas fa-clock"></i> <%= siteSettings.businessHours %></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="header-main">
+        <div class="container">
+            <div class="row">
+                <div class="logo">
+                    <a href="/"><%= siteSettings.companyName %></a>
+                </div>
+                <nav class="nav">
+                    <ul>
+                        <li><a href="/" <% if (typeof category === 'undefined' && typeof product === 'undefined' && typeof page === 'undefined' && (typeof currentPageType === 'undefined' || currentPageType !== 'store')) { %>class="active"<% } %>>Home</a></li>
+                        <li><a href="/store" <% if (typeof currentPageType !== 'undefined' && currentPageType === 'store') { %>class="active"<% } %>>Store</a></li>
+                        <% if (navPages && navPages.length > 0) { %>
+                            <% navPages.forEach(navPage => { %>
+                                <li><a href="/<%= navPage.slug === 'about' || navPage.slug === 'contact' ? navPage.slug : 'page/' + navPage.slug %>" <% if ((typeof page !== 'undefined' && navPage.slug === page.slug) || (typeof currentPage !== 'undefined' && navPage.slug === currentPage)) { %>class="active"<% } %>><%= navPage.title %></a></li>
+                            <% }) %>
+                        <% } %>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </div>
+</header>

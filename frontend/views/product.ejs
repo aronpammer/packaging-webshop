@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% title = product.name; %>
+    <% metaDescription = product.shortDescription || product.name; %>
+    <%- include('partials/head') %>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <p>
+                <a href="/">Home</a> /
+                <% if (product.category) { %>
+                    <a href="/category/<%= product.category.slug %>"><%= product.category.name %></a> /
+                <% } %>
+                <%= product.name %>
+            </p>
+        </div>
+    </div>
+
+    <!-- Product Details -->
+    <section class="product-hero">
+        <div class="container">
+            <div class="product-layout">
+                <!-- Product Image -->
+                <div class="product-image-section">
+                    <div class="product-image-container">
+                        <% if (product.image?.data) { %>
+                            <img src="<%= STRAPI_URL %><%= product.image.data.attributes.url %>" alt="<%= product.name %>" class="product-main-image">
+                        <% } else { %>
+                            <div class="product-image-placeholder">
+                                <i class="fas fa-image"></i>
+                                <span>No Image Available</span>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+
+                <!-- Product Info -->
+                <div class="product-info-section">
+                    <div class="product-header">
+                        <% if (product.category) { %>
+                            <div class="product-category">
+                                <a href="/category/<%= product.category.slug %>"><%= product.category.name %></a>
+                            </div>
+                        <% } %>
+                        <h1 class="product-title"><%= product.name %></h1>
+                        <% if (product.shortDescription) { %>
+                            <p class="product-subtitle"><%= product.shortDescription %></p>
+                        <% } %>
+                    </div>
+
+                    <div class="product-actions">
+                        <div class="contact-section">
+                            <h3 class="contact-title">
+                                <i class="fas fa-headset"></i>
+                                <%= siteSettings.contactTitle || 'Get Quote & Information' %>
+                            </h3>
+                            <p class="contact-description"><%= siteSettings.contactDescription || 'Contact our specialists for pricing, technical specs, and availability.' %></p>
+                            <div class="contact-buttons">
+                                <a href="tel:<%= siteSettings.phone %>" class="btn btn-primary btn-contact">
+                                    <i class="fas fa-phone"></i>
+                                    <span><%= siteSettings.callButtonText || 'Call' %> <%= siteSettings.phone %></span>
+                                </a>
+                                <a href="mailto:<%= siteSettings.email %>?subject=Inquiry about <%= product.name %>" class="btn btn-outline btn-contact">
+                                    <i class="fas fa-envelope"></i>
+                                    <span><%= siteSettings.emailButtonText || 'Email Inquiry' %></span>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Product Description -->
+    <% if (product.description) { %>
+    <section class="product-description-section">
+        <div class="container">
+            <div class="description-content">
+                <h2 class="section-title">Product Details</h2>
+                <div class="description-text">
+                    <%- product.description %>
+                </div>
+            </div>
+        </div>
+    </section>
+    <% } %>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% title = category.name; %>
+    <% metaDescription = category.description; %>
+    <%- include('partials/head') %>
+</head>
+<body>
+    <% currentCategory = category; %>
+    <%- include('partials/header') %>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <p><a href="/">Home</a> / <%= category.name %></p>
+        </div>
+    </div>
+
+    <!-- Category Header -->
+    <section class="section">
+        <div class="container">
+            <div class="row">
+                <div class="col-8">
+                    <h1><%= category.name %></h1>
+                    <p style="font-size: 1.1rem;"><%= category.description %></p>
+                </div>
+                <div class="col-4">
+                    <% if (category.image?.data) { %>
+                        <img src="<%= STRAPI_URL %><%= category.image.data.attributes.url %>" alt="<%= category.name %>" style="width: 100%; border-radius: var(--border-radius);">
+                    <% } %>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <% if (products.length > 0) { %>
+    <section class="section" style="background: #f8f9fa;">
+        <div class="container">
+            <h2 style="text-align: center; margin-bottom: 50px;"><%= category.name %> Products</h2>
+            <div class="products-grid">
+                <% products.forEach(product => { %>
+                    <div class="card product-card">
+                        <% if (product.image?.data) { %>
+                            <img src="<%= STRAPI_URL %><%= product.image.data.attributes.url %>" alt="<%= product.name %>" class="card-img">
+                        <% } else { %>
+                            <div class="card-img" style="background: var(--light-gray); display: flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-image" style="font-size: 3rem; color: var(--dark-gray);"></i>
+                            </div>
+                        <% } %>
+                        <div class="card-body">
+                            <h3 class="card-title"><%= product.name %></h3>
+                            <p class="card-text"><%= product.shortDescription || 'Professional packaging equipment' %></p>
+                            <% if (product.featured) { %>
+                                <span class="badge">Featured</span>
+                                <br><br>
+                            <% } %>
+                            <a href="/product/<%= product.slug %>" class="btn btn-primary">Learn More</a>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+    </section>
+    <% } else { %>
+    <section class="section" style="text-align: center; background: #f8f9fa;">
+        <div class="container">
+            <h2>No Products Available</h2>
+            <p>Products in this category are coming soon. Please check back later or contact us for specific equipment needs.</p>
+            <a href="/contact" class="btn btn-primary">Contact Us</a>
+        </div>
+    </section>
+    <% } %>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

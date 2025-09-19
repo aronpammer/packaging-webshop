@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% title = "Store - Browse All Products"; %>
+    <% metaDescription = "Browse our complete product catalog. Filter by category and find the perfect packaging equipment for your needs."; %>
+    <%- include('partials/head') %>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <!-- Breadcrumb -->
+    <div class="breadcrumb">
+        <div class="container">
+            <p><a href="/">Home</a> / Store</p>
+        </div>
+    </div>
+
+    <!-- Store Content -->
+    <section class="store-section">
+        <div class="container">
+            <div class="store-layout">
+                <!-- Sidebar Filters -->
+                <aside class="store-sidebar">
+                    <!-- Search -->
+                    <div class="filter-group">
+                        <h3 class="filter-title">Search Products</h3>
+                        <form method="GET" action="/store" class="search-form">
+                            <div class="search-input-group">
+                                <input type="text" name="search" placeholder="Search products..." value="<%= searchQuery %>" class="search-input">
+                                <button type="submit" class="search-btn">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                            <% if (currentCategory) { %>
+                                <input type="hidden" name="category" value="<%= currentCategory %>">
+                            <% } %>
+                        </form>
+                    </div>
+
+                    <!-- Categories Filter -->
+                    <div class="filter-group">
+                        <h3 class="filter-title">Categories</h3>
+                        <div class="filter-options">
+                            <a href="/store" class="filter-option <% if (!currentCategory) { %>active<% } %>">
+                                <span class="filter-label">All Categories</span>
+                                <span class="filter-count">(<%= totalProductCount %>)</span>
+                            </a>
+                            <% categories.forEach(category => { %>
+                                <a href="/store?category=<%= category.slug %>" class="filter-option <% if (currentCategory === category.slug) { %>active<% } %>">
+                                    <span class="filter-label"><%= category.name %></span>
+                                    <span class="filter-count">(<%= category.productCount %>)</span>
+                                </a>
+                            <% }) %>
+                        </div>
+                    </div>
+
+                    <!-- Clear Filters -->
+                    <% if (currentCategory || searchQuery) { %>
+                        <div class="filter-group">
+                            <a href="/store" class="btn btn-secondary btn-block">Clear All Filters</a>
+                        </div>
+                    <% } %>
+                </aside>
+
+                <!-- Main Content -->
+                <main class="store-main">
+                    <!-- Results Header -->
+                    <div class="store-results-header">
+                        <div class="results-info">
+                            <h2 class="results-title">
+                                <% if (currentCategory) { %>
+                                    <%= categories.find(cat => cat.slug === currentCategory)?.name || 'Category' %>
+                                <% } else if (searchQuery) { %>
+                                    Search Results
+                                <% } else { %>
+                                    All Products
+                                <% } %>
+                            </h2>
+                            <p class="results-count"><%= products.length %> product<%= products.length === 1 ? '' : 's' %> found</p>
+                        </div>
+                        <!-- Sort Options -->
+                        <div class="sort-options">
+                            <select class="sort-select">
+                                <option value="default">Sort by: Default</option>
+                                <option value="name">Name A-Z</option>
+                                <option value="name-desc">Name Z-A</option>
+                                <option value="newest">Newest First</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Products Grid -->
+                    <div class="store-content">
+                        <% if (products.length === 0) { %>
+                            <div class="no-results">
+                                <div class="no-results-icon">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <h3>No products found</h3>
+                                <p>We couldn't find any products matching your criteria.</p>
+                                <a href="/store" class="btn btn-primary">View All Products</a>
+                            </div>
+                        <% } else { %>
+                            <div class="products-grid">
+                                <% products.forEach(product => { %>
+                                    <a href="/product/<%= product.slug %>" class="card product-card product-card-link">
+                                        <% if (product.image?.data) { %>
+                                            <img src="<%= STRAPI_URL %><%= product.image.data.attributes.url %>" alt="<%= product.name %>" class="card-img">
+                                        <% } else { %>
+                                            <div class="card-img card-img-placeholder">
+                                                <i class="fas fa-image"></i>
+                                            </div>
+                                        <% } %>
+                                        <div class="card-body">
+                                            <h3 class="card-title"><%= product.name %></h3>
+                                            <p class="card-text"><%= product.shortDescription || 'Professional packaging equipment' %></p>
+                                            <% if (product.category?.name) { %>
+                                                <span class="badge"><%= product.category.name %></span>
+                                            <% } %>
+                                        </div>
+                                    </a>
+                                <% }) %>
+                            </div>
+                        <% } %>
+                    </div>
+                </main>
+            </div>
+        </div>
+    </section>
+
+    <%- include('partials/footer') %>
+</body>
+</html>

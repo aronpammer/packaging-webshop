@@ -1,0 +1,41 @@
+<!-- Footer -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-3">
+                <h4><%= siteSettings.companyName %></h4>
+                <p><%= siteSettings.companyDescription %></p>
+            </div>
+            <div class="col-3">
+                <h4>Categories</h4>
+                <ul>
+                    <% categories.forEach(category => { %>
+                        <li><a href="/category/<%= category.slug %>"><%= category.name %></a></li>
+                    <% }) %>
+                </ul>
+            </div>
+            <div class="col-3">
+                <h4>Pages</h4>
+                <ul>
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/store">Store</a></li>
+                    <% if (navPages && navPages.length > 0) { %>
+                        <% navPages.filter(page => page.showInFooter !== false).forEach(page => { %>
+                            <li><a href="/<%= page.slug === 'about' || page.slug === 'contact' ? page.slug : 'page/' + page.slug %>"><%= page.title %></a></li>
+                        <% }) %>
+                    <% } %>
+                </ul>
+            </div>
+            <div class="col-3">
+                <h4>Contact Info</h4>
+                <p><%= siteSettings.address %></p>
+                <p>Phone: <%= siteSettings.phone %></p>
+                <p>Email: <%= siteSettings.email %></p>
+                <p>Hours: <%= siteSettings.businessHours %></p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; <%= siteSettings.copyrightText %></p>
+        </div>
+    </div>
+</footer>

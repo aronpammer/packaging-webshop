@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <% title = "Professional Industrial Equipment"; %>
+    <% metaDescription = "Professional packaging equipment solutions including plastic strapping, steel strapping, film wrapping, and adhesive technology."; %>
+    <%- include('partials/head') %>
+</head>
+<body>
+    <%- include('partials/header') %>
+
+    <!-- Hero Section -->
+    <section class="hero-simple">
+        <div class="container">
+            <div class="hero-content-simple">
+                <h1 class="hero-title-simple"><%= heroContent.title %></h1>
+                <p class="hero-description-simple"><%= heroContent.description %></p>
+                <div class="hero-actions-simple">
+                    <a href="<%= heroContent.buttonLink %>" class="btn btn-primary"><%= heroContent.buttonText %></a>
+                    <a href="/contact" class="btn btn-secondary">Get Quote</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories-modern">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title-modern">Browse Categories</h2>
+                <p class="section-subtitle">Discover our comprehensive range of packaging solutions</p>
+            </div>
+            <div class="categories-grid-simple">
+                <% categories.forEach((category) => { %>
+                    <a href="/category/<%= category.slug %>" class="category-card-simple">
+                        <div class="category-image-container">
+                            <% if (category.image?.data) { %>
+                                <img src="<%= STRAPI_URL %><%= category.image.data.attributes.url %>" alt="<%= category.name %>" class="category-image">
+                            <% } else { %>
+                                <div class="category-no-image">
+                                    <div class="no-image-icon">📷</div>
+                                    <span class="no-image-text">No Image</span>
+                                </div>
+                            <% } %>
+                        </div>
+                        <div class="category-info">
+                            <h3 class="category-title"><%= category.name %></h3>
+                            <p class="category-desc"><%= category.description || 'Professional solutions' %></p>
+                        </div>
+                    </a>
+                <% }) %>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Products -->
+    <% if (featuredProducts.length > 0) { %>
+    <section class="featured-products-modern">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title-modern">Featured Products</h2>
+                <p class="section-subtitle">Top-quality equipment trusted by industry leaders</p>
+            </div>
+            <div class="products-grid-modern">
+                <% featuredProducts.forEach(product => { %>
+                    <div class="product-card-modern">
+                        <div class="product-image-wrapper">
+                            <% if (product.image?.data) { %>
+                                <img src="<%= STRAPI_URL %><%= product.image.data.attributes.url %>" alt="<%= product.name %>" class="product-image-modern">
+                            <% } else { %>
+                                <div class="product-image-placeholder">
+                                    <i class="fas fa-image"></i>
+                                </div>
+                            <% } %>
+                            <% if (product.category?.name) { %>
+                                <div class="product-category-badge"><%= product.category.name %></div>
+                            <% } %>
+                        </div>
+                        <div class="product-info-modern">
+                            <h3 class="product-name-modern"><%= product.name %></h3>
+                            <p class="product-description-modern"><%= product.shortDescription || 'Professional packaging equipment' %></p>
+                            <a href="/product/<%= product.slug %>" class="product-link-modern">
+                                <span>Learn More</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+            <div class="featured-cta">
+                <a href="/store" class="btn btn-primary btn-lg">View All Products</a>
+            </div>
+        </div>
+    </section>
+    <% } %>
+
+
+
+    <%- include('partials/footer') %>
+</body>
+</html>

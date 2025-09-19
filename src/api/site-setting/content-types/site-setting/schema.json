@@ -1,0 +1,81 @@
+{
+  "kind": "singleType",
+  "collectionName": "site_settings",
+  "info": {
+    "singularName": "site-setting",
+    "pluralName": "site-settings",
+    "displayName": "Site Setting",
+    "description": "Global site settings including contact information, company details, and other site-wide content"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "phone": {
+      "type": "string",
+      "required": false,
+      "default": "+1-234-567-8900"
+    },
+    "email": {
+      "type": "email",
+      "required": false,
+      "default": "info@packagingequipment.com"
+    },
+    "businessHours": {
+      "type": "string",
+      "required": false,
+      "default": "Mon-Fri 8AM-5PM"
+    },
+    "address": {
+      "type": "text",
+      "required": false,
+      "default": "123 Industrial Blvd, City, State 12345"
+    },
+    "companyName": {
+      "type": "string",
+      "required": false,
+      "default": "Packaging Equipment Solutions"
+    },
+    "companyDescription": {
+      "type": "text",
+      "required": false,
+      "default": "Professional packaging equipment and solutions for all your industrial needs."
+    },
+    "copyrightText": {
+      "type": "string",
+      "required": false,
+      "default": "2024 Packaging Equipment Solutions. All rights reserved."
+    },
+    "metaDescription": {
+      "type": "text",
+      "required": false,
+      "default": "Professional packaging equipment solutions including plastic strapping, steel strapping, film wrapping, and adhesive technology."
+    },
+    "metaKeywords": {
+      "type": "string",
+      "required": false,
+      "default": "packaging equipment, strapping, wrapping, industrial supplies"
+    },
+    "contactTitle": {
+      "type": "string",
+      "required": false,
+      "default": "Get Quote & Information"
+    },
+    "contactDescription": {
+      "type": "text",
+      "required": false,
+      "default": "Contact our specialists for pricing, technical specs, and availability."
+    },
+    "callButtonText": {
+      "type": "string",
+      "required": false,
+      "default": "Call"
+    },
+    "emailButtonText": {
+      "type": "string",
+      "required": false,
+      "default": "Email Inquiry"
+    }
+  }
+}
