@@ -12,7 +12,7 @@
     <!-- Breadcrumb -->
     <div class="breadcrumb">
         <div class="container">
-            <p><a href="/">Home</a> / <%= category.name %></p>
+            <p><a href="/"><%= siteSettings.homeText %></a> / <%= category.name %></p>
         </div>
     </div>
 
@@ -37,7 +37,7 @@
     <% if (products.length > 0) { %>
     <section class="section" style="background: #f8f9fa;">
         <div class="container">
-            <h2 style="text-align: center; margin-bottom: 50px;"><%= category.name %> Products</h2>
+            <h2 style="text-align: center; margin-bottom: 50px;"><%= category.name %> <%= siteSettings.productsText %></h2>
             <div class="products-grid">
                 <% products.forEach(product => { %>
                     <div class="card product-card">
@@ -50,12 +50,12 @@
                         <% } %>
                         <div class="card-body">
                             <h3 class="card-title"><%= product.name %></h3>
-                            <p class="card-text"><%= product.shortDescription || 'Professional packaging equipment' %></p>
+                            <p class="card-text"><%= product.shortDescription || siteSettings.professionalPackagingEquipmentText %></p>
                             <% if (product.featured) { %>
-                                <span class="badge">Featured</span>
+                                <span class="badge"><%= siteSettings.featuredBadgeText %></span>
                                 <br><br>
                             <% } %>
-                            <a href="/product/<%= product.slug %>" class="btn btn-primary">Learn More</a>
+                            <a href="/product/<%= product.slug %>" class="btn btn-primary"><%= siteSettings.learnMoreText %></a>
                         </div>
                     </div>
                 <% }) %>
@@ -65,9 +65,9 @@
     <% } else { %>
     <section class="section" style="text-align: center; background: #f8f9fa;">
         <div class="container">
-            <h2>No Products Available</h2>
-            <p>Products in this category are coming soon. Please check back later or contact us for specific equipment needs.</p>
-            <a href="/contact" class="btn btn-primary">Contact Us</a>
+            <h2><%= siteSettings.noProductsAvailableTitle %></h2>
+            <p><%= siteSettings.noProductsAvailableText %></p>
+            <a href="/contact" class="btn btn-primary"><%= siteSettings.contactUsText %></a>
         </div>
     </section>
     <% } %>

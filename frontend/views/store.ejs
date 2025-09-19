@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <% title = "Store - Browse All Products"; %>
-    <% metaDescription = "Browse our complete product catalog. Filter by category and find the perfect packaging equipment for your needs."; %>
+    <% title = siteSettings.storePageTitle; %>
+    <% metaDescription = siteSettings.storePageMetaDescription; %>
     <%- include('partials/head') %>
 </head>
 <body>
@@ -11,7 +11,7 @@
     <!-- Breadcrumb -->
     <div class="breadcrumb">
         <div class="container">
-            <p><a href="/">Home</a> / Store</p>
+            <p><a href="/"><%= siteSettings.homeText %></a> / <%= siteSettings.storeText %></p>
         </div>
     </div>
 
@@ -23,10 +23,10 @@
                 <aside class="store-sidebar">
                     <!-- Search -->
                     <div class="filter-group">
-                        <h3 class="filter-title">Search Products</h3>
+                        <h3 class="filter-title"><%= siteSettings.searchProductsText %></h3>
                         <form method="GET" action="/store" class="search-form">
                             <div class="search-input-group">
-                                <input type="text" name="search" placeholder="Search products..." value="<%= searchQuery %>" class="search-input">
+                                <input type="text" name="search" placeholder="<%= siteSettings.searchPlaceholderText %>" value="<%= searchQuery %>" class="search-input">
                                 <button type="submit" class="search-btn">
                                     <i class="fas fa-search"></i>
                                 </button>
@@ -39,10 +39,10 @@
 
                     <!-- Categories Filter -->
                     <div class="filter-group">
-                        <h3 class="filter-title">Categories</h3>
+                        <h3 class="filter-title"><%= siteSettings.footerCategoriesTitle %></h3>
                         <div class="filter-options">
                             <a href="/store" class="filter-option <% if (!currentCategory) { %>active<% } %>">
-                                <span class="filter-label">All Categories</span>
+                                <span class="filter-label"><%= siteSettings.allCategoriesText %></span>
                                 <span class="filter-count">(<%= totalProductCount %>)</span>
                             </a>
                             <% categories.forEach(category => { %>
@@ -57,7 +57,7 @@
                     <!-- Clear Filters -->
                     <% if (currentCategory || searchQuery) { %>
                         <div class="filter-group">
-                            <a href="/store" class="btn btn-secondary btn-block">Clear All Filters</a>
+                            <a href="/store" class="btn btn-secondary btn-block"><%= siteSettings.clearAllFiltersText %></a>
                         </div>
                     <% } %>
                 </aside>
@@ -69,22 +69,22 @@
                         <div class="results-info">
                             <h2 class="results-title">
                                 <% if (currentCategory) { %>
-                                    <%= categories.find(cat => cat.slug === currentCategory)?.name || 'Category' %>
+                                    <%= categories.find(cat => cat.slug === currentCategory)?.name || siteSettings.categoryText %>
                                 <% } else if (searchQuery) { %>
-                                    Search Results
+                                    <%= siteSettings.searchResultsText %>
                                 <% } else { %>
-                                    All Products
+                                    <%= siteSettings.allProductsText %>
                                 <% } %>
                             </h2>
-                            <p class="results-count"><%= products.length %> product<%= products.length === 1 ? '' : 's' %> found</p>
+                            <p class="results-count"><%= products.length %> <%= products.length === 1 ? siteSettings.productFoundText : siteSettings.productsFoundText %> <%= siteSettings.foundText %></p>
                         </div>
                         <!-- Sort Options -->
                         <div class="sort-options">
                             <select class="sort-select">
-                                <option value="default">Sort by: Default</option>
-                                <option value="name">Name A-Z</option>
-                                <option value="name-desc">Name Z-A</option>
-                                <option value="newest">Newest First</option>
+                                <option value="default"><%= siteSettings.sortByDefaultText %></option>
+                                <option value="name"><%= siteSettings.nameAZText %></option>
+                                <option value="name-desc"><%= siteSettings.nameZAText %></option>
+                                <option value="newest"><%= siteSettings.newestFirstText %></option>
                             </select>
                         </div>
                     </div>
@@ -96,9 +96,9 @@
                                 <div class="no-results-icon">
                                     <i class="fas fa-search"></i>
                                 </div>
-                                <h3>No products found</h3>
-                                <p>We couldn't find any products matching your criteria.</p>
-                                <a href="/store" class="btn btn-primary">View All Products</a>
+                                <h3><%= siteSettings.noProductsFoundTitle %></h3>
+                                <p><%= siteSettings.noProductsFoundText %></p>
+                                <a href="/store" class="btn btn-primary"><%= siteSettings.viewAllProductsButtonText %></a>
                             </div>
                         <% } else { %>
                             <div class="products-grid">
@@ -113,7 +113,7 @@
                                         <% } %>
                                         <div class="card-body">
                                             <h3 class="card-title"><%= product.name %></h3>
-                                            <p class="card-text"><%= product.shortDescription || 'Professional packaging equipment' %></p>
+                                            <p class="card-text"><%= product.shortDescription || siteSettings.professionalPackagingEquipmentText %></p>
                                             <% if (product.category?.name) { %>
                                                 <span class="badge"><%= product.category.name %></span>
                                             <% } %>

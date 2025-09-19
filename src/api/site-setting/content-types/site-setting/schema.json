@@ -76,6 +76,241 @@
       "type": "string",
       "required": false,
       "default": "Email Inquiry"
+    },
+    "footerCategoriesTitle": {
+      "type": "string",
+      "required": false,
+      "default": "Categories"
+    },
+    "footerPagesTitle": {
+      "type": "string",
+      "required": false,
+      "default": "Pages"
+    },
+    "footerContactTitle": {
+      "type": "string",
+      "required": false,
+      "default": "Contact Info"
+    },
+    "homePageTitle": {
+      "type": "string",
+      "required": false,
+      "default": "Professional Industrial Equipment"
+    },
+    "homePageMetaDescription": {
+      "type": "text",
+      "required": false,
+      "default": "Professional packaging equipment solutions including plastic strapping, steel strapping, film wrapping, and adhesive technology."
+    },
+    "categoriesSectionTitle": {
+      "type": "string",
+      "required": false,
+      "default": "Browse Categories"
+    },
+    "categoriesSectionSubtitle": {
+      "type": "text",
+      "required": false,
+      "default": "Discover our comprehensive range of packaging solutions"
+    },
+    "featuredProductsSectionTitle": {
+      "type": "string",
+      "required": false,
+      "default": "Featured Products"
+    },
+    "featuredProductsSectionSubtitle": {
+      "type": "text",
+      "required": false,
+      "default": "Top-quality equipment trusted by industry leaders"
+    },
+    "viewAllProductsButtonText": {
+      "type": "string",
+      "required": false,
+      "default": "View All Products"
+    },
+    "getQuoteButtonText": {
+      "type": "string",
+      "required": false,
+      "default": "Get Quote"
+    },
+    "homeText": {
+      "type": "string",
+      "required": false,
+      "default": "Home"
+    },
+    "storeText": {
+      "type": "string",
+      "required": false,
+      "default": "Store"
+    },
+    "learnMoreText": {
+      "type": "string",
+      "required": false,
+      "default": "Learn More"
+    },
+    "contactUsText": {
+      "type": "string",
+      "required": false,
+      "default": "Contact Us"
+    },
+    "productDetailsTitle": {
+      "type": "string",
+      "required": false,
+      "default": "Product Details"
+    },
+    "keyFeaturesTitle": {
+      "type": "string",
+      "required": false,
+      "default": "Key Features"
+    },
+    "technicalSpecificationsTitle": {
+      "type": "string",
+      "required": false,
+      "default": "Technical Specifications"
+    },
+    "featuredBadgeText": {
+      "type": "string",
+      "required": false,
+      "default": "Featured"
+    },
+    "noImageAvailableText": {
+      "type": "string",
+      "required": false,
+      "default": "No Image Available"
+    },
+    "noImageText": {
+      "type": "string",
+      "required": false,
+      "default": "No Image"
+    },
+    "professionalSolutionsText": {
+      "type": "string",
+      "required": false,
+      "default": "Professional solutions"
+    },
+    "professionalPackagingEquipmentText": {
+      "type": "string",
+      "required": false,
+      "default": "Professional packaging equipment"
+    },
+    "productsText": {
+      "type": "string",
+      "required": false,
+      "default": "Products"
+    },
+    "noProductsAvailableTitle": {
+      "type": "string",
+      "required": false,
+      "default": "No Products Available"
+    },
+    "noProductsAvailableText": {
+      "type": "text",
+      "required": false,
+      "default": "Products in this category are coming soon. Please check back later or contact us for specific equipment needs."
+    },
+    "storePageTitle": {
+      "type": "string",
+      "required": false,
+      "default": "Store - Browse All Products"
+    },
+    "storePageMetaDescription": {
+      "type": "text",
+      "required": false,
+      "default": "Browse our complete product catalog. Filter by category and find the perfect packaging equipment for your needs."
+    },
+    "searchProductsText": {
+      "type": "string",
+      "required": false,
+      "default": "Search Products"
+    },
+    "searchPlaceholderText": {
+      "type": "string",
+      "required": false,
+      "default": "Search products..."
+    },
+    "allCategoriesText": {
+      "type": "string",
+      "required": false,
+      "default": "All Categories"
+    },
+    "clearAllFiltersText": {
+      "type": "string",
+      "required": false,
+      "default": "Clear All Filters"
+    },
+    "categoryText": {
+      "type": "string",
+      "required": false,
+      "default": "Category"
+    },
+    "searchResultsText": {
+      "type": "string",
+      "required": false,
+      "default": "Search Results"
+    },
+    "allProductsText": {
+      "type": "string",
+      "required": false,
+      "default": "All Products"
+    },
+    "productFoundText": {
+      "type": "string",
+      "required": false,
+      "default": "product"
+    },
+    "productsFoundText": {
+      "type": "string",
+      "required": false,
+      "default": "products"
+    },
+    "foundText": {
+      "type": "string",
+      "required": false,
+      "default": "found"
+    },
+    "sortByDefaultText": {
+      "type": "string",
+      "required": false,
+      "default": "Sort by: Default"
+    },
+    "nameAZText": {
+      "type": "string",
+      "required": false,
+      "default": "Name A-Z"
+    },
+    "nameZAText": {
+      "type": "string",
+      "required": false,
+      "default": "Name Z-A"
+    },
+    "newestFirstText": {
+      "type": "string",
+      "required": false,
+      "default": "Newest First"
+    },
+    "noProductsFoundTitle": {
+      "type": "string",
+      "required": false,
+      "default": "No products found"
+    },
+    "noProductsFoundText": {
+      "type": "text",
+      "required": false,
+      "default": "We couldn't find any products matching your criteria."
+    },
+    "phoneText": {
+      "type": "string",
+      "required": false,
+      "default": "Phone"
+    },
+    "emailText": {
+      "type": "string",
+      "required": false,
+      "default": "Email"
+    },
+    "hoursText": {
+      "type": "string",
+      "required": false,
+      "default": "Hours"
     }
   }
 }

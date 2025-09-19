@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <% title = "Professional Industrial Equipment"; %>
-    <% metaDescription = "Professional packaging equipment solutions including plastic strapping, steel strapping, film wrapping, and adhesive technology."; %>
+    <% title = siteSettings.homePageTitle; %>
+    <% metaDescription = siteSettings.homePageMetaDescription; %>
     <%- include('partials/head') %>
 </head>
 <body>
@@ -16,7 +16,7 @@
                 <p class="hero-description-simple"><%= heroContent.description %></p>
                 <div class="hero-actions-simple">
                     <a href="<%= heroContent.buttonLink %>" class="btn btn-primary"><%= heroContent.buttonText %></a>
-                    <a href="/contact" class="btn btn-secondary">Get Quote</a>
+                    <a href="/contact" class="btn btn-secondary"><%= siteSettings.getQuoteButtonText %></a>
                 </div>
             </div>
         </div>
@@ -26,8 +26,8 @@
     <section class="categories-modern">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title-modern">Browse Categories</h2>
-                <p class="section-subtitle">Discover our comprehensive range of packaging solutions</p>
+                <h2 class="section-title-modern"><%= siteSettings.categoriesSectionTitle %></h2>
+                <p class="section-subtitle"><%= siteSettings.categoriesSectionSubtitle %></p>
             </div>
             <div class="categories-grid-simple">
                 <% categories.forEach((category) => { %>
@@ -38,13 +38,13 @@
                             <% } else { %>
                                 <div class="category-no-image">
                                     <div class="no-image-icon">📷</div>
-                                    <span class="no-image-text">No Image</span>
+                                    <span class="no-image-text"><%= siteSettings.noImageText %></span>
                                 </div>
                             <% } %>
                         </div>
                         <div class="category-info">
                             <h3 class="category-title"><%= category.name %></h3>
-                            <p class="category-desc"><%= category.description || 'Professional solutions' %></p>
+                            <p class="category-desc"><%= category.description || siteSettings.professionalSolutionsText %></p>
                         </div>
                     </a>
                 <% }) %>
@@ -57,8 +57,8 @@
     <section class="featured-products-modern">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title-modern">Featured Products</h2>
-                <p class="section-subtitle">Top-quality equipment trusted by industry leaders</p>
+                <h2 class="section-title-modern"><%= siteSettings.featuredProductsSectionTitle %></h2>
+                <p class="section-subtitle"><%= siteSettings.featuredProductsSectionSubtitle %></p>
             </div>
             <div class="products-grid-modern">
                 <% featuredProducts.forEach(product => { %>
@@ -77,9 +77,9 @@
                         </div>
                         <div class="product-info-modern">
                             <h3 class="product-name-modern"><%= product.name %></h3>
-                            <p class="product-description-modern"><%= product.shortDescription || 'Professional packaging equipment' %></p>
+                            <p class="product-description-modern"><%= product.shortDescription || siteSettings.professionalPackagingEquipmentText %></p>
                             <a href="/product/<%= product.slug %>" class="product-link-modern">
-                                <span>Learn More</span>
+                                <span><%= siteSettings.learnMoreText %></span>
                                 <i class="fas fa-arrow-right"></i>
                             </a>
                         </div>
@@ -87,7 +87,7 @@
                 <% }) %>
             </div>
             <div class="featured-cta">
-                <a href="/store" class="btn btn-primary btn-lg">View All Products</a>
+                <a href="/store" class="btn btn-primary btn-lg"><%= siteSettings.viewAllProductsButtonText %></a>
             </div>
         </div>
     </section>

@@ -61,7 +61,66 @@ async function getSiteSettings() {
         contactTitle: settings?.contactTitle || 'Get Quote & Information',
         contactDescription: settings?.contactDescription || 'Contact our specialists for pricing, technical specs, and availability.',
         callButtonText: settings?.callButtonText || 'Call',
-        emailButtonText: settings?.emailButtonText || 'Email Inquiry'
+        emailButtonText: settings?.emailButtonText || 'Email Inquiry',
+
+        // Footer Text
+        footerCategoriesTitle: settings?.footerCategoriesTitle || 'Categories',
+        footerPagesTitle: settings?.footerPagesTitle || 'Pages',
+        footerContactTitle: settings?.footerContactTitle || 'Contact Info',
+
+        // Home Page Text
+        homePageTitle: settings?.homePageTitle || 'Professional Industrial Equipment',
+        homePageMetaDescription: settings?.homePageMetaDescription || 'Professional packaging equipment solutions including plastic strapping, steel strapping, film wrapping, and adhesive technology.',
+        categoriesSectionTitle: settings?.categoriesSectionTitle || 'Browse Categories',
+        categoriesSectionSubtitle: settings?.categoriesSectionSubtitle || 'Discover our comprehensive range of packaging solutions',
+        featuredProductsSectionTitle: settings?.featuredProductsSectionTitle || 'Featured Products',
+        featuredProductsSectionSubtitle: settings?.featuredProductsSectionSubtitle || 'Top-quality equipment trusted by industry leaders',
+        viewAllProductsButtonText: settings?.viewAllProductsButtonText || 'View All Products',
+        getQuoteButtonText: settings?.getQuoteButtonText || 'Get Quote',
+
+        // General UI Text
+        homeText: settings?.homeText || 'Home',
+        storeText: settings?.storeText || 'Store',
+        learnMoreText: settings?.learnMoreText || 'Learn More',
+        contactUsText: settings?.contactUsText || 'Contact Us',
+        productDetailsTitle: settings?.productDetailsTitle || 'Product Details',
+        keyFeaturesTitle: settings?.keyFeaturesTitle || 'Key Features',
+        technicalSpecificationsTitle: settings?.technicalSpecificationsTitle || 'Technical Specifications',
+        featuredBadgeText: settings?.featuredBadgeText || 'Featured',
+        noImageAvailableText: settings?.noImageAvailableText || 'No Image Available',
+        noImageText: settings?.noImageText || 'No Image',
+        professionalSolutionsText: settings?.professionalSolutionsText || 'Professional solutions',
+        professionalPackagingEquipmentText: settings?.professionalPackagingEquipmentText || 'Professional packaging equipment',
+        productsText: settings?.productsText || 'Products',
+
+        // Category Page Text
+        noProductsAvailableTitle: settings?.noProductsAvailableTitle || 'No Products Available',
+        noProductsAvailableText: settings?.noProductsAvailableText || 'Products in this category are coming soon. Please check back later or contact us for specific equipment needs.',
+
+        // Store Page Text
+        storePageTitle: settings?.storePageTitle || 'Store - Browse All Products',
+        storePageMetaDescription: settings?.storePageMetaDescription || 'Browse our complete product catalog. Filter by category and find the perfect packaging equipment for your needs.',
+        searchProductsText: settings?.searchProductsText || 'Search Products',
+        searchPlaceholderText: settings?.searchPlaceholderText || 'Search products...',
+        allCategoriesText: settings?.allCategoriesText || 'All Categories',
+        clearAllFiltersText: settings?.clearAllFiltersText || 'Clear All Filters',
+        categoryText: settings?.categoryText || 'Category',
+        searchResultsText: settings?.searchResultsText || 'Search Results',
+        allProductsText: settings?.allProductsText || 'All Products',
+        productFoundText: settings?.productFoundText || 'product',
+        productsFoundText: settings?.productsFoundText || 'products',
+        foundText: settings?.foundText || 'found',
+        sortByDefaultText: settings?.sortByDefaultText || 'Sort by: Default',
+        nameAZText: settings?.nameAZText || 'Name A-Z',
+        nameZAText: settings?.nameZAText || 'Name Z-A',
+        newestFirstText: settings?.newestFirstText || 'Newest First',
+        noProductsFoundTitle: settings?.noProductsFoundTitle || 'No products found',
+        noProductsFoundText: settings?.noProductsFoundText || 'We couldn\'t find any products matching your criteria.',
+
+        // Contact Labels
+        phoneText: settings?.phoneText || 'Phone',
+        emailText: settings?.emailText || 'Email',
+        hoursText: settings?.hoursText || 'Hours'
     };
 }
 

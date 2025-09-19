@@ -12,7 +12,7 @@
     <div class="breadcrumb">
         <div class="container">
             <p>
-                <a href="/">Home</a> /
+                <a href="/"><%= siteSettings.homeText %></a> /
                 <% if (product.category) { %>
                     <a href="/category/<%= product.category.slug %>"><%= product.category.name %></a> /
                 <% } %>
@@ -33,7 +33,7 @@
                         <% } else { %>
                             <div class="product-image-placeholder">
                                 <i class="fas fa-image"></i>
-                                <span>No Image Available</span>
+                                <span><%= siteSettings.noImageAvailableText %></span>
                             </div>
                         <% } %>
                     </div>
@@ -83,7 +83,7 @@
     <section class="product-description-section">
         <div class="container">
             <div class="description-content">
-                <h2 class="section-title">Product Details</h2>
+                <h2 class="section-title"><%= siteSettings.productDetailsTitle %></h2>
                 <div class="description-text">
                     <%- product.description %>
                 </div>
@@ -96,7 +96,7 @@
     <% if (product.features && product.features.length > 0) { %>
     <section class="product-features">
         <div class="container">
-            <h2 class="section-title">Key Features</h2>
+            <h2 class="section-title"><%= siteSettings.keyFeaturesTitle %></h2>
             <div class="features-grid">
                 <% product.features.forEach(function(feature) { %>
                 <div class="feature-item">
@@ -118,7 +118,7 @@
     <% if (product.specifications && product.specifications.length > 0) { %>
     <section class="product-specifications">
         <div class="container">
-            <h2 class="section-title">Technical Specifications</h2>
+            <h2 class="section-title"><%= siteSettings.technicalSpecificationsTitle %></h2>
             <div class="specifications-table">
                 <% product.specifications.forEach(function(spec) { %>
                 <div class="spec-row">
