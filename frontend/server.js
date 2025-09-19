@@ -145,8 +145,8 @@ app.get('/', async (req, res) => {
         // Get homepage content from CMS or use defaults
         const homePage = homepageData?.data?.[0];
         const heroContent = {
-            title: homePage?.title || 'Professional Packaging Equipment Solutions',
-            description: homePage?.description || 'We provide high-quality strapping, wrapping, and binding equipment for all your packaging needs. From plastic and steel strapping to film wrapping and adhesive technology.',
+            title: homePage?.title || siteSettings.heroTitle,
+            description: homePage?.description || siteSettings.heroDescription,
             buttonText: homePage?.buttonText || siteSettings.heroButtonText,
             buttonLink: homePage?.buttonLink || '#categories'
         };
