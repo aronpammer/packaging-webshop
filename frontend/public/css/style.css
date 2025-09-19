@@ -944,7 +944,6 @@ a:hover {
 .product-header {
     margin-bottom: 40px;
     padding-bottom: 30px;
-    border-bottom: 2px solid #e2e8f0;
 }
 
 .product-category {
@@ -1122,7 +1121,7 @@ a:hover {
 .product-description-section {
     padding: 60px 0;
     background: white;
-    border-top: 1px solid #e2e8f0;
+    margin-top: 60px;
 }
 
 .description-content {
@@ -1139,17 +1138,6 @@ a:hover {
     position: relative;
 }
 
-.section-title::after {
-    content: '';
-    position: absolute;
-    bottom: -12px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 60px;
-    height: 4px;
-    background: linear-gradient(90deg, var(--secondary-color), var(--accent-color));
-    border-radius: 2px;
-}
 
 .description-text {
     font-size: 1.1rem;
