@@ -20,8 +20,8 @@
                 </div>
                 <nav class="nav">
                     <ul>
-                        <li><a href="/" <% if (typeof category === 'undefined' && typeof product === 'undefined' && typeof page === 'undefined' && (typeof currentPageType === 'undefined' || currentPageType !== 'store')) { %>class="active"<% } %>>Home</a></li>
-                        <li><a href="/store" <% if (typeof currentPageType !== 'undefined' && currentPageType === 'store') { %>class="active"<% } %>>Store</a></li>
+                        <li><a href="/" <% if (typeof category === 'undefined' && typeof product === 'undefined' && typeof page === 'undefined' && (typeof currentPageType === 'undefined' || currentPageType !== 'store')) { %>class="active"<% } %>><%= siteSettings.homeText %></a></li>
+                        <li><a href="/store" <% if (typeof currentPageType !== 'undefined' && currentPageType === 'store') { %>class="active"<% } %>><%= siteSettings.storeText %></a></li>
                         <% if (navPages && navPages.length > 0) { %>
                             <% navPages.forEach(navPage => { %>
                                 <li><a href="/<%= navPage.slug === 'about' || navPage.slug === 'contact' ? navPage.slug : 'page/' + navPage.slug %>" <% if ((typeof page !== 'undefined' && navPage.slug === page.slug) || (typeof currentPage !== 'undefined' && navPage.slug === currentPage)) { %>class="active"<% } %>><%= navPage.title %></a></li>
