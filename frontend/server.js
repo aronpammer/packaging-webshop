@@ -120,7 +120,12 @@ async function getSiteSettings() {
         // Contact Labels
         phoneText: settings?.phoneText || 'Phone',
         emailText: settings?.emailText || 'Email',
-        hoursText: settings?.hoursText || 'Hours'
+        hoursText: settings?.hoursText || 'Hours',
+
+        // Hero Button Text
+        heroButtonText: settings?.heroButtonText || 'View Our Products',
+        heroTitle: settings?.heroTitle || 'Professional Packaging Equipment Solutions',
+        heroDescription: settings?.heroDescription || 'We provide high-quality strapping, wrapping, and binding equipment for all your packaging needs. From plastic and steel strapping to film wrapping and adhesive technology.'
     };
 }
 
@@ -142,7 +147,7 @@ app.get('/', async (req, res) => {
         const heroContent = {
             title: homePage?.title || 'Professional Packaging Equipment Solutions',
             description: homePage?.description || 'We provide high-quality strapping, wrapping, and binding equipment for all your packaging needs. From plastic and steel strapping to film wrapping and adhesive technology.',
-            buttonText: homePage?.buttonText || 'View Our Products',
+            buttonText: homePage?.buttonText || siteSettings.heroButtonText,
             buttonLink: homePage?.buttonLink || '#categories'
         };
 

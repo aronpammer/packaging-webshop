@@ -311,6 +311,21 @@
       "type": "string",
       "required": false,
       "default": "Hours"
+    },
+    "heroButtonText": {
+      "type": "string",
+      "required": false,
+      "default": "View Our Products"
+    },
+    "heroTitle": {
+      "type": "string",
+      "required": false,
+      "default": "Professional Packaging Equipment Solutions"
+    },
+    "heroDescription": {
+      "type": "text",
+      "required": false,
+      "default": "We provide high-quality strapping, wrapping, and binding equipment for all your packaging needs. From plastic and steel strapping to film wrapping and adhesive technology."
     }
   }
 }
