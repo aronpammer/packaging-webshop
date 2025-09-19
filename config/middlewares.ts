@@ -2,7 +2,14 @@ export default [
   'strapi::logger',
   'strapi::errors',
   'strapi::security',
-  'strapi::cors',
+  {
+    name: 'strapi::cors',
+    config: {
+      enabled: true,
+      headers: '*',
+      origin: ['http://localhost:1337', 'http://strapi:1337', 'http://localhost:3000', 'http://localhost:3001', 'https://packaging-webshop.aronpammer.com']
+    }
+  },
   'strapi::poweredBy',
   'strapi::query',
   'strapi::body',

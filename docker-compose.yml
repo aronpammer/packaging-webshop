@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   db:
     image: postgres:15
@@ -7,7 +9,7 @@ services:
       POSTGRES_USER: strapi
       POSTGRES_PASSWORD: strapi_pass_2024
     ports:
-      - "5432:5432"
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -27,6 +29,9 @@ services:
       JWT_SECRET: packaging-equipment-jwt-secret-key-2024
       ADMIN_JWT_SECRET: packaging-equipment-admin-jwt-secret-2024
       APP_KEYS: app-key-1,app-key-2,app-key-3,app-key-4
+      API_TOKEN_SALT: ${API_TOKEN_SALT}
+      TRANSFER_TOKEN_SALT: ${TRANSFER_TOKEN_SALT}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY}
     depends_on:
       - db
     volumes:
@@ -40,7 +45,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "3000:3000"
+      - "3001:3000"
     environment:
       STRAPI_URL: http://strapi:1337
     depends_on:

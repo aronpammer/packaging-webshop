@@ -24,7 +24,6 @@ async function fetchFromStrapi(endpoint) {
     try {
         const response = await axios.get(`${STRAPI_URL}/api${endpoint}`, {
             headers: {
-                'Authorization': 'Bearer aa91d1478acc8539c1e4025ae2be86fd9c4cf195b62542d865b5b318e93103390371880232266a9379616abd1fa420136b08a841d22ad59cff78399e2a5af5f149d67e9e312b2df5a107c3a7270dc34951236f8e42d20da6d6af1816578a690e69e0e2618733fdeb730ae85f873c9dbe967915846696e93f635602208e490b20'
             }
         });
         return response.data;
