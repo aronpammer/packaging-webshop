@@ -1,0 +1,118 @@
+/* =============================================
+   HEADER COMPONENT
+   ============================================= */
+
+.header {
+    background: white;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-top {
+    background: var(--primary-color);
+    color: white;
+    padding: 12px 0;
+    font-size: 0.9rem;
+}
+
+.contact-info {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+}
+
+.contact-info span {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+}
+
+.contact-info i {
+    color: var(--accent-color);
+    font-size: 0.9rem;
+}
+
+.header-main {
+    padding: 16px 0;
+}
+
+.header-main .row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo a {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: var(--transition-base);
+}
+
+.logo a:hover {
+    color: var(--secondary-color);
+}
+
+.nav ul {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 32px;
+}
+
+.nav li {
+    margin: 0;
+}
+
+.nav a {
+    color: var(--text-dark);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 0;
+    border-bottom: 2px solid transparent;
+    transition: var(--transition-base);
+    font-size: 0.95rem;
+    display: block;
+}
+
+.nav a:hover,
+.nav a.active {
+    border-bottom-color: var(--secondary-color);
+    color: var(--text-dark);
+}
+
+/* Responsive Header */
+@media (max-width: 768px) {
+    .contact-info {
+        flex-direction: column;
+        gap: 8px;
+        text-align: center;
+    }
+
+    .header-main .row {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+
+    .logo a {
+        font-size: 1.5rem;
+    }
+
+    .nav ul {
+        flex-direction: column;
+        gap: 4px;
+        width: 100%;
+    }
+
+    .nav a {
+        padding: 12px 16px;
+        width: 100%;
+        text-align: center;
+    }
+}
