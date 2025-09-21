@@ -1,0 +1,21 @@
+<% if (menuItem.isActive) { %>
+    <div class="dropdown-item <%= menuItem.children.length > 0 ? 'has-submenu' : '' %>">
+        <a href="<%= menuItem.url %>"
+           class="<%= menuItem.children.length > 0 ? 'dropdown-link' : 'dropdown-link' %>"
+           <% if (menuItem.openInNewTab) { %>target="_blank" rel="noopener noreferrer"<% } %>>
+            <span class="menu-text">
+                <% if (menuItem.icon) { %><i class="<%= menuItem.icon %>"></i> <% } %>
+                <%= menuItem.title %>
+            </span>
+            <% if (menuItem.children.length > 0) { %><i class="fas fa-chevron-right submenu-arrow"></i><% } %>
+        </a>
+
+        <% if (menuItem.children.length > 0) { %>
+            <div class="submenu">
+                <% menuItem.children.forEach(subItem => { %>
+                    <%- include('submenu-item', { menuItem: subItem }) %>
+                <% }) %>
+            </div>
+        <% } %>
+    </div>
+<% } %>

@@ -1,0 +1,102 @@
+{
+  "kind": "singleType",
+  "collectionName": "stores",
+  "info": {
+    "singularName": "store",
+    "pluralName": "stores",
+    "displayName": "Store",
+    "description": "Store page content and settings"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "pageTitle": {
+      "type": "string",
+      "required": true,
+      "default": "Store - Browse All Products"
+    },
+    "pageMetaDescription": {
+      "type": "text",
+      "default": "Browse our complete product catalog. Filter by category and find the perfect packaging equipment for your needs."
+    },
+    "heroTitle": {
+      "type": "string",
+      "default": "Browse Our Products"
+    },
+    "heroDescription": {
+      "type": "text",
+      "default": "Find the perfect packaging equipment for your needs from our comprehensive catalog."
+    },
+    "heroBackgroundImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "searchSectionTitle": {
+      "type": "string",
+      "default": "Find Products"
+    },
+    "searchPlaceholder": {
+      "type": "string",
+      "default": "Search products..."
+    },
+    "filterSectionTitle": {
+      "type": "string",
+      "default": "Filter by Category"
+    },
+    "allCategoriesText": {
+      "type": "string",
+      "default": "All Categories"
+    },
+    "clearFiltersText": {
+      "type": "string",
+      "default": "Clear All Filters"
+    },
+    "sortByText": {
+      "type": "string",
+      "default": "Sort by:"
+    },
+    "sortOptions": {
+      "type": "json",
+      "default": {
+        "default": "Default",
+        "nameAZ": "Name A-Z",
+        "nameZA": "Name Z-A",
+        "newest": "Newest First"
+      }
+    },
+    "noProductsTitle": {
+      "type": "string",
+      "default": "No products found"
+    },
+    "noProductsDescription": {
+      "type": "text",
+      "default": "We couldn't find any products matching your criteria. Try adjusting your search or filters."
+    },
+    "showProductCounts": {
+      "type": "boolean",
+      "default": true
+    },
+    "productsPerPage": {
+      "type": "integer",
+      "default": 12,
+      "min": 1,
+      "max": 50
+    },
+    "enableSearch": {
+      "type": "boolean",
+      "default": true
+    },
+    "enableCategoryFilter": {
+      "type": "boolean",
+      "default": true
+    },
+    "enableSorting": {
+      "type": "boolean",
+      "default": true
+    }
+  }
+}

@@ -1,0 +1,120 @@
+{
+  "kind": "singleType",
+  "collectionName": "homepage",
+  "info": {
+    "singularName": "homepage",
+    "pluralName": "homepages",
+    "displayName": "Homepage",
+    "description": "Homepage content and configuration"
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "heroTitle": {
+      "type": "string",
+      "required": false,
+      "default": "Professional Packaging Equipment Solutions"
+    },
+    "heroDescription": {
+      "type": "text",
+      "required": false,
+      "default": "We provide high-quality strapping, wrapping, and binding equipment for all your packaging needs. From plastic and steel strapping to film wrapping and adhesive technology."
+    },
+    "heroButtonText": {
+      "type": "string",
+      "required": false,
+      "default": "View Our Products"
+    },
+    "heroButtonLink": {
+      "type": "string",
+      "required": false,
+      "default": "/store"
+    },
+    "heroBackgroundImage": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
+    },
+    "categoriesSectionTitle": {
+      "type": "string",
+      "required": false,
+      "default": "Browse Categories"
+    },
+    "categoriesSectionSubtitle": {
+      "type": "text",
+      "required": false,
+      "default": "Discover our comprehensive range of packaging solutions"
+    },
+    "showCategoriesSection": {
+      "type": "boolean",
+      "default": true
+    },
+    "featuredProductsSectionTitle": {
+      "type": "string",
+      "required": false,
+      "default": "Featured Products"
+    },
+    "featuredProductsSectionSubtitle": {
+      "type": "text",
+      "required": false,
+      "default": "Top-quality equipment trusted by industry leaders"
+    },
+    "showFeaturedProductsSection": {
+      "type": "boolean",
+      "default": true
+    },
+    "showLatestProductsInsteadOfCategories": {
+      "type": "boolean",
+      "default": false
+    },
+    "latestProductsCount": {
+      "type": "integer",
+      "default": 5,
+      "min": 1,
+      "max": 20
+    },
+    "viewAllProductsButtonText": {
+      "type": "string",
+      "required": false,
+      "default": "View All Products"
+    },
+    "viewAllProductsButtonLink": {
+      "type": "string",
+      "required": false,
+      "default": "/store"
+    },
+    "getQuoteButtonText": {
+      "type": "string",
+      "required": false,
+      "default": "Get Quote"
+    },
+    "getQuoteButtonLink": {
+      "type": "string",
+      "required": false,
+      "default": "/contact"
+    },
+    "showViewAllProductsButton": {
+      "type": "boolean",
+      "default": true
+    },
+    "showGetQuoteButton": {
+      "type": "boolean",
+      "default": true
+    },
+    "metaTitle": {
+      "type": "string",
+      "required": false
+    },
+    "metaDescription": {
+      "type": "text",
+      "required": false
+    },
+    "seoKeywords": {
+      "type": "string",
+      "required": false
+    }
+  }
+}

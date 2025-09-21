@@ -42,11 +42,10 @@
       "required": false,
       "allowedTypes": ["images"]
     },
-    "category": {
+    "productCategory": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::category.category",
-      "inversedBy": "products"
+      "target": "api::product-category.product-category"
     },
     "featured": {
       "type": "boolean",

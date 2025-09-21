@@ -9,56 +9,100 @@
     <%- include('partials/header') %>
 
     <!-- Hero Section -->
-    <section class="hero-simple">
+    <section class="hero-simple" <% if (heroContent.backgroundImage) { %>style="background-image: url('<%= heroContent.backgroundImage %>')"<% } %>>
         <div class="container">
             <div class="hero-content-simple">
                 <h1 class="hero-title-simple"><%= heroContent.title %></h1>
                 <p class="hero-description-simple"><%= heroContent.description %></p>
                 <div class="hero-actions-simple">
                     <a href="<%= heroContent.buttonLink %>" class="btn btn-primary"><%= heroContent.buttonText %></a>
-                    <a href="/contact" class="btn btn-secondary"><%= siteSettings.getQuoteButtonText %></a>
+                    <% if (actionButtons.getQuote.show) { %>
+                        <a href="<%= actionButtons.getQuote.link %>" class="btn btn-secondary"><%= actionButtons.getQuote.text %></a>
+                    <% } %>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Categories Section -->
-    <section class="categories-modern">
-        <div class="container">
-            <div class="section-header">
-                <h2 class="section-title-modern"><%= siteSettings.categoriesSectionTitle %></h2>
-                <p class="section-subtitle"><%= siteSettings.categoriesSectionSubtitle %></p>
+    <!-- Categories or Latest Products Section -->
+    <% if (homepage?.showCategoriesSection !== false && !showLatestProducts) { %>
+        <section class="categories-modern">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title-modern"><%= homepage?.categoriesSectionTitle || siteSettings.categoriesSectionTitle %></h2>
+                    <p class="section-subtitle"><%= homepage?.categoriesSectionSubtitle || siteSettings.categoriesSectionSubtitle %></p>
+                </div>
+                <div class="categories-grid-simple">
+                    <% (productCategories || []).forEach((category) => { %>
+                        <a href="/product-category/<%= category.slug %>" class="category-card-simple">
+                            <div class="category-image-container">
+                                <% if (category.image) { %>
+                                    <img src="<%= category.image.url %>" alt="<%= category.name %>" class="category-image">
+                                <% } else { %>
+                                    <div class="category-no-image">
+                                        <div class="no-image-icon">📷</div>
+                                        <span class="no-image-text"><%= siteSettings.noImageText %></span>
+                                    </div>
+                                <% } %>
+                            </div>
+                            <div class="category-info">
+                                <h3 class="category-title"><%= category.name %></h3>
+                                <p class="category-desc"><%= category.description || siteSettings.professionalSolutionsText %></p>
+                            </div>
+                        </a>
+                    <% }) %>
+                </div>
             </div>
-            <div class="categories-grid-simple">
-                <% categories.forEach((category) => { %>
-                    <a href="/category/<%= category.slug %>" class="category-card-simple">
-                        <div class="category-image-container">
-                            <% if (category.image) { %>
-                                <img src="<%= category.image.url %>" alt="<%= category.name %>" class="category-image">
-                            <% } else { %>
-                                <div class="category-no-image">
-                                    <div class="no-image-icon">📷</div>
-                                    <span class="no-image-text"><%= siteSettings.noImageText %></span>
-                                </div>
-                            <% } %>
+        </section>
+    <% } else if (showLatestProducts && latestProducts.length > 0) { %>
+        <section class="latest-products-modern">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title-modern">Legfrissebb termékek</h2>
+                    <p class="section-subtitle">Tekintse meg legújabban feltöltött termékeink</p>
+                </div>
+                <div class="products-grid-modern">
+                    <% latestProducts.forEach(product => { %>
+                        <div class="product-card-modern">
+                            <div class="product-image-wrapper">
+                                <% if (product.image) { %>
+                                    <img src="<%= product.image.url %>" alt="<%= product.name %>" class="product-image-modern">
+                                <% } else { %>
+                                    <div class="product-image-placeholder">
+                                        <i class="fas fa-image"></i>
+                                    </div>
+                                <% } %>
+                                <% if (product.category?.name) { %>
+                                    <div class="product-category-badge"><%= product.category.name %></div>
+                                <% } %>
+                            </div>
+                            <div class="product-info-modern">
+                                <h3 class="product-name-modern"><%= product.name %></h3>
+                                <p class="product-description-modern"><%= product.shortDescription || siteSettings.professionalPackagingEquipmentText %></p>
+                                <a href="/product/<%= product.slug %>" class="product-link-modern">
+                                    <span><%= siteSettings.learnMoreText %></span>
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
                         </div>
-                        <div class="category-info">
-                            <h3 class="category-title"><%= category.name %></h3>
-                            <p class="category-desc"><%= category.description || siteSettings.professionalSolutionsText %></p>
-                        </div>
-                    </a>
-                <% }) %>
+                    <% }) %>
+                </div>
+                <% if (actionButtons.viewAllProducts.show) { %>
+                <div class="featured-cta">
+                    <a href="<%= actionButtons.viewAllProducts.link %>" class="btn btn-primary btn-lg"><%= actionButtons.viewAllProducts.text %></a>
+                </div>
+                <% } %>
             </div>
-        </div>
-    </section>
+        </section>
+    <% } %>
 
     <!-- Featured Products -->
-    <% if (featuredProducts.length > 0) { %>
+    <% if (featuredProducts.length > 0 && homepage?.showFeaturedProductsSection !== false) { %>
     <section class="featured-products-modern">
         <div class="container">
             <div class="section-header">
-                <h2 class="section-title-modern"><%= siteSettings.featuredProductsSectionTitle %></h2>
-                <p class="section-subtitle"><%= siteSettings.featuredProductsSectionSubtitle %></p>
+                <h2 class="section-title-modern"><%= homepage?.featuredProductsSectionTitle || siteSettings.featuredProductsSectionTitle %></h2>
+                <p class="section-subtitle"><%= homepage?.featuredProductsSectionSubtitle || siteSettings.featuredProductsSectionSubtitle %></p>
             </div>
             <div class="products-grid-modern">
                 <% featuredProducts.forEach(product => { %>
@@ -86,9 +130,11 @@
                     </div>
                 <% }) %>
             </div>
+            <% if (actionButtons.viewAllProducts.show) { %>
             <div class="featured-cta">
-                <a href="/store" class="btn btn-primary btn-lg"><%= siteSettings.viewAllProductsButtonText %></a>
+                <a href="<%= actionButtons.viewAllProducts.link %>" class="btn btn-primary btn-lg"><%= actionButtons.viewAllProducts.text %></a>
             </div>
+            <% } %>
         </div>
     </section>
     <% } %>

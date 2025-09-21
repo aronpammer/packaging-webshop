@@ -45,7 +45,7 @@
                                 <span class="filter-label"><%= siteSettings.allCategoriesText %></span>
                                 <span class="filter-count">(<%= totalProductCount %>)</span>
                             </a>
-                            <% categories.forEach(category => { %>
+                            <% productCategories.forEach(category => { %>
                                 <a href="/store?category=<%= category.slug %>" class="filter-option <% if (currentCategory === category.slug) { %>active<% } %>">
                                     <span class="filter-label"><%= category.name %></span>
                                     <span class="filter-count">(<%= category.productCount %>)</span>
@@ -69,7 +69,7 @@
                         <div class="results-info">
                             <h2 class="results-title">
                                 <% if (currentCategory) { %>
-                                    <%= categories.find(cat => cat.slug === currentCategory)?.name || siteSettings.categoryText %>
+                                    <%= productCategories.find(cat => cat.slug === currentCategory)?.name || siteSettings.categoryText %>
                                 <% } else if (searchQuery) { %>
                                     <%= siteSettings.searchResultsText %>
                                 <% } else { %>

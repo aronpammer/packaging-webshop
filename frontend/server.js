@@ -125,8 +125,196 @@ async function getSiteSettings() {
         // Hero Button Text
         heroButtonText: settings?.heroButtonText || 'View Our Products',
         heroTitle: settings?.heroTitle || 'Professional Packaging Equipment Solutions',
-        heroDescription: settings?.heroDescription || 'We provide high-quality strapping, wrapping, and binding equipment for all your packaging needs. From plastic and steel strapping to film wrapping and adhesive technology.'
+        heroDescription: settings?.heroDescription || 'We provide high-quality strapping, wrapping, and binding equipment for all your packaging needs. From plastic and steel strapping to film wrapping and adhesive technology.',
+
+        // New navigation fields
+        productsText: settings?.productsText || 'Termékek',
+        aboutText: settings?.aboutText || 'Rólunk',
+        companyMotto: settings?.companyMotto || 'Professzionális csomagolástechnikai megoldások'
     };
+}
+
+// Helper function to build category hierarchy with all nested levels
+function buildCategoryHierarchy(categories) {
+    const categoryMap = new Map();
+    const rootCategories = [];
+
+    // First pass: create map of all categories
+    categories.forEach(cat => {
+        categoryMap.set(cat.id, {
+            ...cat,
+            childCategories: []
+        });
+    });
+
+    // Second pass: build hierarchy
+    categories.forEach(cat => {
+        const category = categoryMap.get(cat.id);
+        if (cat.parentCategory) {
+            const parent = categoryMap.get(cat.parentCategory.id);
+            if (parent) {
+                parent.childCategories.push(category);
+            }
+        } else {
+            rootCategories.push(category);
+        }
+    });
+
+    return rootCategories;
+}
+
+// Helper function to recursively add category children to menu
+function addCategoryChildrenRecursively(childCategories, parentMenuItemId, itemMap, visitedCategoryIds = new Set(), maxDepth = 10, currentDepth = 0) {
+    // Prevent infinite recursion due to cycles or excessive depth
+    if (currentDepth >= maxDepth) {
+        console.warn(`Maximum menu depth (${maxDepth}) reached for parent ${parentMenuItemId}`);
+        return;
+    }
+
+    childCategories.forEach((childCategory, index) => {
+        console.log(`Processing category: ${childCategory.name} (ID: ${childCategory.id}) at depth ${currentDepth}`);
+        console.log(`Has children:`, childCategory.childCategories ? childCategory.childCategories.length : 0);
+
+        // Check for circular reference
+        if (visitedCategoryIds.has(childCategory.id)) {
+            console.warn(`Circular reference detected: category ${childCategory.id} (${childCategory.name}) already processed in this branch`);
+            return;
+        }
+
+        const autoChildId = `auto-child-${parentMenuItemId}-${childCategory.id}`;
+        const autoChildItem = {
+            id: autoChildId,
+            title: childCategory.name,
+            sortOrder: index,
+            linkType: 'product-category',
+            customUrl: null,
+            openInNewTab: false,
+            isActive: true,
+            cssClass: 'auto-generated',
+            icon: null,
+            description: childCategory.description,
+            parentId: parentMenuItemId,
+            children: [],
+            url: `/product-category/${childCategory.slug}`
+        };
+        itemMap.set(autoChildId, autoChildItem);
+        console.log(`Added menu item: ${autoChildItem.title} with parent: ${parentMenuItemId}`);
+
+        // Recursively add this category's children if they exist
+        if (childCategory.childCategories && childCategory.childCategories.length > 0) {
+            console.log(`Recursing into ${childCategory.childCategories.length} children of ${childCategory.name}`);
+            // Create a new set with the current category added for this branch
+            const newVisitedIds = new Set(visitedCategoryIds);
+            newVisitedIds.add(childCategory.id);
+
+            addCategoryChildrenRecursively(
+                childCategory.childCategories,
+                autoChildId,
+                itemMap,
+                newVisitedIds,
+                maxDepth,
+                currentDepth + 1
+            );
+        }
+    });
+}
+
+// Helper function to get menu configuration
+async function getMenuConfiguration() {
+    const [menuData, productCategoriesData] = await Promise.all([
+        fetchFromStrapi('/menu-items?populate[targetPage]=true&populate[targetProductCategory]=true&populate[parentMenuItem]=true&populate[childMenuItems]=true&sort=sortOrder:asc'),
+        fetchFromStrapi('/product-categories?populate=*&sort=sortOrder:asc')
+    ]);
+
+    const menuItems = menuData?.data || [];
+    const allCategories = productCategoriesData?.data || [];
+
+    // Build complete category hierarchy
+    const productCategories = buildCategoryHierarchy(allCategories);
+
+    console.log('Menu items fetched:', menuItems.length);
+    menuItems.forEach(item => {
+        console.log(`Menu item: ${item.title}, Parent: ${item.parentMenuItem ? item.parentMenuItem.title : 'None'}, Active: ${item.isActive}, Published: ${item.publishedAt ? 'Yes' : 'No'}`);
+    });
+
+    // Build hierarchical menu structure
+    const menuTree = [];
+    const itemMap = new Map();
+
+    // First pass: create all items and map them
+    menuItems.forEach(item => {
+        const menuItem = {
+            id: item.id,
+            title: item.title,
+            sortOrder: item.sortOrder,
+            linkType: item.linkType,
+            customUrl: item.customUrl,
+            openInNewTab: item.openInNewTab,
+            isActive: item.isActive,
+            cssClass: item.cssClass,
+            icon: item.icon,
+            description: item.description,
+            parentId: item.parentMenuItem?.id || null,
+            children: [],
+            url: getMenuItemUrl(item)
+        };
+        itemMap.set(item.id, menuItem);
+
+        // If this menu item points to a product category, automatically add its child categories recursively
+        if (item.linkType === 'product-category' && item.targetProductCategory) {
+            const category = productCategories.find(cat => cat.id === item.targetProductCategory.id);
+            if (category && category.childCategories && category.childCategories.length > 0) {
+                addCategoryChildrenRecursively(category.childCategories, item.id, itemMap);
+            }
+        }
+    });
+
+    // Second pass: build hierarchy
+    itemMap.forEach(item => {
+        if (item.parentId) {
+            const parent = itemMap.get(item.parentId);
+            if (parent) {
+                parent.children.push(item);
+            }
+        } else {
+            menuTree.push(item);
+        }
+    });
+
+    // Sort children by sortOrder
+    const sortChildren = (items) => {
+        items.sort((a, b) => a.sortOrder - b.sortOrder);
+        items.forEach(item => {
+            if (item.children.length > 0) {
+                sortChildren(item.children);
+            }
+        });
+    };
+    sortChildren(menuTree);
+
+    return menuTree;
+}
+
+// Helper function to generate URL for menu item
+function getMenuItemUrl(item) {
+    switch (item.linkType) {
+        case 'page':
+            if (item.targetPage) {
+                // Special cases for about and contact pages
+                if (item.targetPage.slug === 'about' || item.targetPage.slug === 'contact') {
+                    return `/${item.targetPage.slug}`;
+                }
+                return `/page/${item.targetPage.slug}`;
+            }
+            return '#';
+        case 'product-category':
+            return item.targetProductCategory ? `/product-category/${item.targetProductCategory.slug}` : '#';
+        case 'custom-url':
+            return item.customUrl || '#';
+        case 'no-link':
+        default:
+            return '#';
+    }
 }
 
 // Routes
@@ -134,28 +322,61 @@ async function getSiteSettings() {
 // Homepage
 app.get('/', async (req, res) => {
     try {
-        const [categoriesData, featuredProductsData, pagesData, homepageData, siteSettings] = await Promise.all([
-            fetchFromStrapi('/categories?populate=image&sort=sortOrder:asc'),
+        const [productCategoriesData, featuredProductsData, pagesData, homepageData, siteSettings, menuConfiguration, latestProductsData] = await Promise.all([
+            fetchFromStrapi('/product-categories?populate=image&sort=sortOrder:asc'),
             fetchFromStrapi('/products?populate=*&filters[featured][$eq]=true&sort=sortOrder:asc'),
-            fetchFromStrapi('/pages?filters[showInNavigation][$eq]=true&sort=navigationOrder:asc'),
-            fetchFromStrapi('/pages?filters[slug][$eq]=home&populate=*'),
-            getSiteSettings()
+            fetchFromStrapi('/pages?sort=navigationOrder:asc'),
+            fetchFromStrapi('/homepage?populate=*'),
+            getSiteSettings(),
+            getMenuConfiguration(),
+            fetchFromStrapi('/products?populate=*&sort=createdAt:desc&pagination[limit]=5')
         ]);
 
         // Get homepage content from CMS or use defaults
-        const homePage = homepageData?.data?.[0];
+        const homepage = homepageData?.data;
         const heroContent = {
-            title: homePage?.title || siteSettings.heroTitle,
-            description: homePage?.description || siteSettings.heroDescription,
-            buttonText: homePage?.buttonText || siteSettings.heroButtonText,
-            buttonLink: homePage?.buttonLink || '#categories'
+            title: homepage?.heroTitle || siteSettings.heroTitle,
+            description: homepage?.heroDescription || siteSettings.heroDescription,
+            buttonText: homepage?.heroButtonText || siteSettings.heroButtonText,
+            buttonLink: homepage?.heroButtonLink || '/store',
+            backgroundImage: homepage?.heroBackgroundImage?.url || null
         };
 
+        // Determine what to show in the main content
+        const showLatestProducts = homepage?.showLatestProductsInsteadOfCategories || false;
+        const latestProductsCount = homepage?.latestProductsCount || 5;
+
+        // Configure action buttons
+        const actionButtons = {
+            viewAllProducts: {
+                text: homepage?.viewAllProductsButtonText || siteSettings.viewAllProductsButtonText,
+                link: homepage?.viewAllProductsButtonLink || '/store',
+                show: homepage?.showViewAllProductsButton !== false
+            },
+            getQuote: {
+                text: homepage?.getQuoteButtonText || siteSettings.getQuoteButtonText,
+                link: homepage?.getQuoteButtonLink || '/contact',
+                show: homepage?.showGetQuoteButton !== false
+            }
+        };
+
+        const productCategories = buildCategoryHierarchy(productCategoriesData?.data || []);
+
+        console.log('Raw productCategoriesData:', productCategoriesData?.data?.length || 0);
+        console.log('Built productCategories:', productCategories?.length || 0);
+        console.log('productCategories type:', typeof productCategories);
+
         res.render('index', {
-            categories: categoriesData?.data || [],
+            categories: productCategories,
+            productCategories: productCategories,
             featuredProducts: featuredProductsData?.data || [],
+            latestProducts: latestProductsData?.data || [],
             navPages: pagesData?.data || [],
+            menuConfiguration: menuConfiguration,
             heroContent: heroContent,
+            homepage: homepage,
+            actionButtons: actionButtons,
+            showLatestProducts: showLatestProducts,
             siteSettings: siteSettings,
             currentPageType: 'home',
             STRAPI_URL
@@ -166,45 +387,50 @@ app.get('/', async (req, res) => {
     }
 });
 
-// Category page
-app.get('/category/:slug', async (req, res) => {
+// Product Category page
+app.get('/product-category/:slug', async (req, res) => {
     try {
-        const [categoryData, productsData, categoriesData, pagesData, siteSettings] = await Promise.all([
-            fetchFromStrapi(`/categories?filters[slug][$eq]=${req.params.slug}&populate=image`),
-            fetchFromStrapi(`/products?populate=*&filters[category][slug][$eq]=${req.params.slug}&sort=sortOrder:asc`),
-            fetchFromStrapi('/categories?populate=image&sort=sortOrder:asc'),
-            fetchFromStrapi('/pages?filters[showInNavigation][$eq]=true&sort=navigationOrder:asc'),
-            getSiteSettings()
+        const [categoryData, productsData, productCategoriesData, pagesData, siteSettings, menuConfiguration] = await Promise.all([
+            fetchFromStrapi(`/product-categories?filters[slug][$eq]=${req.params.slug}&populate=*`),
+            fetchFromStrapi(`/products?populate=*&filters[productCategory][slug][$eq]=${req.params.slug}&sort=sortOrder:asc`),
+            fetchFromStrapi('/product-categories?populate=image&sort=sortOrder:asc'),
+            fetchFromStrapi('/pages?sort=navigationOrder:asc'),
+            getSiteSettings(),
+            getMenuConfiguration()
         ]);
 
         const category = categoryData?.data?.[0];
         if (!category) {
-            return res.status(404).send('Category not found');
+            return res.status(404).send('Product category not found');
         }
 
         res.render('category', {
             category: category,
             products: productsData?.data || [],
-            categories: categoriesData?.data || [],
+            categories: productCategoriesData?.data || [],
+            productCategories: productCategoriesData?.data || [],
             navPages: pagesData?.data || [],
+            menuConfiguration: menuConfiguration,
             siteSettings: siteSettings,
-            currentPageType: 'category',
+            currentPageType: 'product-category',
             STRAPI_URL
         });
     } catch (error) {
-        console.error('Error loading category:', error);
+        console.error('Error loading product category:', error);
         res.status(500).send('Server Error');
     }
 });
 
+
 // Product page
 app.get('/product/:slug', async (req, res) => {
     try {
-        const [productData, categoriesData, pagesData, siteSettings] = await Promise.all([
+        const [productData, categoriesData, pagesData, siteSettings, menuConfiguration] = await Promise.all([
             fetchFromStrapi(`/products?filters[slug][$eq]=${req.params.slug}&populate=*`),
-            fetchFromStrapi('/categories?populate=image&sort=sortOrder:asc'),
-            fetchFromStrapi('/pages?filters[showInNavigation][$eq]=true&sort=navigationOrder:asc'),
-            getSiteSettings()
+            fetchFromStrapi('/product-categories?populate=image&sort=sortOrder:asc'),
+            fetchFromStrapi('/pages?sort=navigationOrder:asc'),
+            getSiteSettings(),
+            getMenuConfiguration()
         ]);
 
         const product = productData?.data?.[0];
@@ -216,6 +442,7 @@ app.get('/product/:slug', async (req, res) => {
             product: product,
             categories: categoriesData?.data || [],
             navPages: pagesData?.data || [],
+            menuConfiguration: menuConfiguration,
             siteSettings: siteSettings,
             currentPageType: 'product',
             STRAPI_URL
@@ -229,11 +456,12 @@ app.get('/product/:slug', async (req, res) => {
 // Dynamic page handler
 app.get('/page/:slug', async (req, res) => {
     try {
-        const [pageData, categoriesData, pagesData, siteSettings] = await Promise.all([
+        const [pageData, categoriesData, pagesData, siteSettings, menuConfiguration] = await Promise.all([
             fetchFromStrapi(`/pages?filters[slug][$eq]=${req.params.slug}&populate=*`),
-            fetchFromStrapi('/categories?populate=image&sort=sortOrder:asc'),
-            fetchFromStrapi('/pages?filters[showInNavigation][$eq]=true&sort=navigationOrder:asc'),
-            getSiteSettings()
+            fetchFromStrapi('/product-categories?populate=image&sort=sortOrder:asc'),
+            fetchFromStrapi('/pages?sort=navigationOrder:asc'),
+            getSiteSettings(),
+            getMenuConfiguration()
         ]);
 
         const page = pageData?.data?.[0];
@@ -245,6 +473,7 @@ app.get('/page/:slug', async (req, res) => {
             page: page,
             categories: categoriesData?.data || [],
             navPages: pagesData?.data || [],
+            menuConfiguration: menuConfiguration,
             siteSettings: siteSettings,
             currentPageType: 'page',
             STRAPI_URL
@@ -258,11 +487,12 @@ app.get('/page/:slug', async (req, res) => {
 // About page - CMS only
 app.get('/about', async (req, res) => {
     try {
-        const [pageData, categoriesData, pagesData, siteSettings] = await Promise.all([
+        const [pageData, categoriesData, pagesData, siteSettings, menuConfiguration] = await Promise.all([
             fetchFromStrapi(`/pages?filters[slug][$eq]=about&populate=*`),
-            fetchFromStrapi('/categories?populate=image&sort=sortOrder:asc'),
-            fetchFromStrapi('/pages?filters[showInNavigation][$eq]=true&sort=navigationOrder:asc'),
-            getSiteSettings()
+            fetchFromStrapi('/product-categories?populate=image&sort=sortOrder:asc'),
+            fetchFromStrapi('/pages?sort=navigationOrder:asc'),
+            getSiteSettings(),
+            getMenuConfiguration()
         ]);
 
         const page = pageData?.data?.[0];
@@ -274,6 +504,7 @@ app.get('/about', async (req, res) => {
             page: page,
             categories: categoriesData?.data || [],
             navPages: pagesData?.data || [],
+            menuConfiguration: menuConfiguration,
             siteSettings: siteSettings,
             currentPageType: 'page',
             STRAPI_URL
@@ -284,14 +515,72 @@ app.get('/about', async (req, res) => {
     }
 });
 
+// Contact form submission
+app.post('/contact/send', express.json(), async (req, res) => {
+    try {
+        const { name, email, phone, subject, message } = req.body;
+
+        // Basic validation
+        if (!name || !email || !subject || !message) {
+            return res.status(400).json({ error: 'Required fields are missing' });
+        }
+
+        // Here you would typically:
+        // 1. Save to database
+        // 2. Send email notification
+        // 3. Send auto-response email
+
+        // For now, just log the submission
+        console.log('Contact form submission:', {
+            name,
+            email,
+            phone,
+            subject,
+            message,
+            timestamp: new Date().toISOString()
+        });
+
+        // Save to Strapi as a contact submission
+        const submissionData = {
+            name,
+            email,
+            phone,
+            subject,
+            message,
+            ipAddress: req.ip,
+            userAgent: req.get('User-Agent')
+        };
+
+        try {
+            const response = await axios.post(`${STRAPI_URL}/api/contact-submissions`, {
+                data: submissionData
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log('Contact submission saved to database:', response.data?.data?.id);
+        } catch (dbError) {
+            console.error('Failed to save contact submission to database:', dbError.message);
+            // Continue anyway - don't fail the request if database save fails
+        }
+
+        res.json({ success: true, message: 'Message sent successfully' });
+    } catch (error) {
+        console.error('Error processing contact form:', error);
+        res.status(500).json({ error: 'Failed to send message' });
+    }
+});
+
 // Contact page - CMS only
 app.get('/contact', async (req, res) => {
     try {
-        const [pageData, categoriesData, pagesData, siteSettings] = await Promise.all([
+        const [pageData, categoriesData, pagesData, siteSettings, menuConfiguration] = await Promise.all([
             fetchFromStrapi(`/pages?filters[slug][$eq]=contact&populate=*`),
-            fetchFromStrapi('/categories?populate=image&sort=sortOrder:asc'),
-            fetchFromStrapi('/pages?filters[showInNavigation][$eq]=true&sort=navigationOrder:asc'),
-            getSiteSettings()
+            fetchFromStrapi('/product-categories?populate=image&sort=sortOrder:asc'),
+            fetchFromStrapi('/pages?sort=navigationOrder:asc'),
+            getSiteSettings(),
+            getMenuConfiguration()
         ]);
 
         const page = pageData?.data?.[0];
@@ -299,12 +588,13 @@ app.get('/contact', async (req, res) => {
             return res.status(404).send('Contact page not found. Please create it in the CMS with slug "contact".');
         }
 
-        res.render('page', {
+        res.render('contact', {
             page: page,
             categories: categoriesData?.data || [],
             navPages: pagesData?.data || [],
+            menuConfiguration: menuConfiguration,
             siteSettings: siteSettings,
-            currentPageType: 'page',
+            currentPageType: 'contact',
             STRAPI_URL
         });
     } catch (error) {
@@ -322,7 +612,7 @@ app.get('/store', async (req, res) => {
         // Build product filter URL
         let filterParams = [];
         if (categoryFilter) {
-            filterParams.push(`filters[category][slug][$eq]=${categoryFilter}`);
+            filterParams.push(`filters[productCategory][slug][$eq]=${categoryFilter}`);
         }
         if (searchQuery) {
             filterParams.push(`filters[$or][0][name][$containsi]=${encodeURIComponent(searchQuery)}`);
@@ -332,12 +622,14 @@ app.get('/store', async (req, res) => {
 
         const filterString = filterParams.length > 0 ? '&' + filterParams.join('&') : '';
 
-        const [categoriesData, productsData, pagesData, allProductsData, siteSettings] = await Promise.all([
-            fetchFromStrapi('/categories?populate=image&sort=sortOrder:asc'),
+        const [categoriesData, productsData, pagesData, allProductsData, siteSettings, menuConfiguration, storeData] = await Promise.all([
+            fetchFromStrapi('/product-categories?populate=image&sort=sortOrder:asc'),
             fetchFromStrapi(`/products?populate=*&sort=sortOrder:asc${filterString}`),
-            fetchFromStrapi('/pages?filters[showInNavigation][$eq]=true&sort=navigationOrder:asc'),
-            fetchFromStrapi('/products?populate=category&sort=sortOrder:asc'),
-            getSiteSettings()
+            fetchFromStrapi('/pages?sort=navigationOrder:asc'),
+            fetchFromStrapi('/products?populate=productCategory&sort=sortOrder:asc'),
+            getSiteSettings(),
+            getMenuConfiguration(),
+            fetchFromStrapi('/store?populate=*')
         ]);
 
         // Calculate product counts for each category
@@ -347,8 +639,8 @@ app.get('/store', async (req, res) => {
 
         // Count products per category
         allProducts.forEach(product => {
-            if (product.category) {
-                const categorySlug = product.category.slug;
+            if (product.productCategory) {
+                const categorySlug = product.productCategory.slug;
                 categoryProductCounts[categorySlug] = (categoryProductCounts[categorySlug] || 0) + 1;
             }
         });
@@ -359,14 +651,46 @@ app.get('/store', async (req, res) => {
             productCount: categoryProductCounts[category.slug] || 0
         }));
 
+        // Get store content from CMS or use defaults
+        const store = storeData?.data;
+        const storeContent = {
+            pageTitle: store?.pageTitle || siteSettings.storePageTitle,
+            pageMetaDescription: store?.pageMetaDescription || siteSettings.storePageMetaDescription,
+            heroTitle: store?.heroTitle || 'Browse Our Products',
+            heroDescription: store?.heroDescription || 'Find the perfect packaging equipment for your needs from our comprehensive catalog.',
+            heroBackgroundImage: store?.heroBackgroundImage?.url || null,
+            searchSectionTitle: store?.searchSectionTitle || 'Find Products',
+            searchPlaceholder: store?.searchPlaceholder || siteSettings.searchPlaceholderText,
+            filterSectionTitle: store?.filterSectionTitle || 'Filter by Category',
+            allCategoriesText: store?.allCategoriesText || siteSettings.allCategoriesText,
+            clearFiltersText: store?.clearFiltersText || siteSettings.clearAllFiltersText,
+            sortByText: store?.sortByText || 'Sort by:',
+            sortOptions: store?.sortOptions || {
+                default: siteSettings.sortByDefaultText,
+                nameAZ: siteSettings.nameAZText,
+                nameZA: siteSettings.nameZAText,
+                newest: siteSettings.newestFirstText
+            },
+            noProductsTitle: store?.noProductsTitle || siteSettings.noProductsFoundTitle,
+            noProductsDescription: store?.noProductsDescription || siteSettings.noProductsFoundText,
+            showProductCounts: store?.showProductCounts !== false,
+            productsPerPage: store?.productsPerPage || 12,
+            enableSearch: store?.enableSearch !== false,
+            enableCategoryFilter: store?.enableCategoryFilter !== false,
+            enableSorting: store?.enableSorting !== false
+        };
+
         res.render('store', {
             categories: categoriesWithCounts,
+            productCategories: categoriesWithCounts,
             products: productsData?.data || [],
             navPages: pagesData?.data || [],
+            menuConfiguration: menuConfiguration,
             currentCategory: categoryFilter || null,
             searchQuery: searchQuery || '',
             totalProductCount: totalProductCount,
             siteSettings: siteSettings,
+            store: storeContent,
             currentPageType: 'store',
             STRAPI_URL
         });

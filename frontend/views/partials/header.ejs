@@ -18,14 +18,24 @@
                 <div class="logo">
                     <a href="/"><%= siteSettings.companyName %></a>
                 </div>
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars"></i>
+                </button>
                 <nav class="nav">
-                    <ul>
-                        <li><a href="/" <% if (typeof category === 'undefined' && typeof product === 'undefined' && typeof page === 'undefined' && (typeof currentPageType === 'undefined' || currentPageType !== 'store')) { %>class="active"<% } %>><%= siteSettings.homeText %></a></li>
-                        <li><a href="/store" <% if (typeof currentPageType !== 'undefined' && currentPageType === 'store') { %>class="active"<% } %>><%= siteSettings.storeText %></a></li>
-                        <% if (navPages && navPages.length > 0) { %>
-                            <% navPages.forEach(navPage => { %>
-                                <li><a href="/<%= navPage.slug === 'about' || navPage.slug === 'contact' ? navPage.slug : 'page/' + navPage.slug %>" <% if ((typeof page !== 'undefined' && navPage.slug === page.slug) || (typeof currentPage !== 'undefined' && navPage.slug === currentPage)) { %>class="active"<% } %>><%= navPage.title %></a></li>
+                    <ul class="main-nav">
+                        <% if (menuConfiguration && menuConfiguration.length > 0) { %>
+                            <% menuConfiguration.forEach(menuItem => { %>
+                                <%- include('menu-item', { menuItem: menuItem }) %>
                             <% }) %>
+                        <% } else { %>
+                            <!-- Fallback to old menu structure if no menu configuration exists -->
+                            <li><a href="/" <% if (typeof category === 'undefined' && typeof product === 'undefined' && typeof page === 'undefined' && (typeof currentPageType === 'undefined' || currentPageType !== 'store')) { %>class="active"<% } %>><%= siteSettings.homeText %></a></li>
+                            <li><a href="/store" <% if (typeof currentPageType !== 'undefined' && currentPageType === 'store') { %>class="active"<% } %>><%= siteSettings.storeText %></a></li>
+                            <% if (navPages && navPages.length > 0) { %>
+                                <% navPages.forEach(navPage => { %>
+                                    <li><a href="/<%= navPage.slug === 'about' || navPage.slug === 'contact' ? navPage.slug : 'page/' + navPage.slug %>" <% if ((typeof page !== 'undefined' && navPage.slug === page.slug) || (typeof currentPage !== 'undefined' && navPage.slug === currentPage)) { %>class="active"<% } %>><%= navPage.title %></a></li>
+                                <% }) %>
+                            <% } %>
                         <% } %>
                     </ul>
                 </nav>
@@ -33,3 +43,28 @@
         </div>
     </div>
 </header>
+
+<script>
+function toggleMobileMenu() {
+    const mainNav = document.querySelector('.main-nav');
+    mainNav.classList.toggle('active');
+
+    const toggleButton = document.querySelector('.mobile-menu-toggle i');
+    if (mainNav.classList.contains('active')) {
+        toggleButton.className = 'fas fa-times';
+    } else {
+        toggleButton.className = 'fas fa-bars';
+    }
+}
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', function(event) {
+    const nav = document.querySelector('.main-nav');
+    const toggleButton = document.querySelector('.mobile-menu-toggle');
+
+    if (!nav.contains(event.target) && !toggleButton.contains(event.target)) {
+        nav.classList.remove('active');
+        toggleButton.querySelector('i').className = 'fas fa-bars';
+    }
+});
+</script>

@@ -13,8 +13,8 @@
         <div class="container">
             <p>
                 <a href="/"><%= siteSettings.homeText %></a> /
-                <% if (product.category) { %>
-                    <a href="/category/<%= product.category.slug %>"><%= product.category.name %></a> /
+                <% if (product.productCategory) { %>
+                    <a href="/product-category/<%= product.productCategory.slug %>"><%= product.productCategory.name %></a> /
                 <% } %>
                 <%= product.name %>
             </p>
@@ -42,9 +42,9 @@
                 <!-- Product Info -->
                 <div class="product-info-section">
                     <div class="product-header">
-                        <% if (product.category) { %>
+                        <% if (product.productCategory) { %>
                             <div class="product-category">
-                                <a href="/category/<%= product.category.slug %>"><%= product.category.name %></a>
+                                <a href="/product-category/<%= product.productCategory.slug %>"><%= product.productCategory.name %></a>
                             </div>
                         <% } %>
                         <h1 class="product-title"><%= product.name %></h1>

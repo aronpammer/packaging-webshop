@@ -1,0 +1,21 @@
+<% if (menuItem.isActive) { %>
+    <li class="nav-item <%= menuItem.children.length > 0 ? 'has-dropdown' : '' %> <%= menuItem.cssClass || '' %>">
+        <a href="<%= menuItem.url %>"
+           class="nav-link <%= menuItem.children.length > 0 ? 'dropdown-trigger' : '' %>"
+           <% if (menuItem.openInNewTab) { %>target="_blank" rel="noopener noreferrer"<% } %>>
+            <% if (menuItem.icon) { %><i class="<%= menuItem.icon %>"></i> <% } %>
+            <%= menuItem.title %>
+            <% if (menuItem.children.length > 0) { %><i class="fas fa-chevron-down dropdown-arrow"></i><% } %>
+        </a>
+
+        <% if (menuItem.children.length > 0) { %>
+            <div class="dropdown-menu">
+                <div class="dropdown-content">
+                    <% menuItem.children.forEach(subItem => { %>
+                        <%- include('submenu-item', { menuItem: subItem }) %>
+                    <% }) %>
+                </div>
+            </div>
+        <% } %>
+    </li>
+<% } %>
