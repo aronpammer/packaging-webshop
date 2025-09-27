@@ -351,6 +351,11 @@
       "type": "string",
       "required": false,
       "default": "Welcome"
+    },
+    "headerSearchPlaceholder": {
+      "type": "string",
+      "required": false,
+      "default": "Search products"
     }
   }
 }

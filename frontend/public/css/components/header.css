@@ -20,7 +20,7 @@
 
 .header-top .container {
     width: 100%;
-    max-width: 1500px;
+    max-width: var(--header-footer-width);
     margin: 0 auto;
     padding: 0 20px;
 }
@@ -134,7 +134,7 @@
 
 .header-bottom-container {
     width: 100%;
-    max-width: 1500px;
+    max-width: var(--header-footer-width);
     margin: 0 auto;
     padding: 0 20px;
     display: flex;

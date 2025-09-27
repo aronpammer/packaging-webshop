@@ -5,7 +5,7 @@
 /* Simple Hero Section */
 .hero-simple {
     padding: 80px 0 100px 0;
-    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    background: #232f3e; /* Solid lighter navy color */
     text-align: center;
 }
 
@@ -17,14 +17,14 @@
 .hero-title-simple {
     font-size: 3rem;
     font-weight: 700;
-    color: var(--primary-color);
+    color: white;
     margin-bottom: 24px;
     line-height: 1.1;
 }
 
 .hero-description-simple {
     font-size: 1.2rem;
-    color: #64748b;
+    color: rgba(255, 255, 255, 0.9);
     margin-bottom: 40px;
     line-height: 1.6;
     max-width: 600px;

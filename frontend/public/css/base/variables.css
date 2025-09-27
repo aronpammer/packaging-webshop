@@ -3,10 +3,10 @@
    ============================================= */
 
 :root {
-    /* Color Palette */
-    --primary-color: #1e293b;
-    --secondary-color: #3b82f6;
-    --accent-color: #0ea5e9;
+    /* Color Palette - Amazon-style navy theme */
+    --primary-color: #131921;  /* Dark navy - main header */
+    --secondary-color: #232f3e; /* Lighter navy - sub header */
+    --accent-color: #febd69;   /* Amazon orange/yellow */
     --success-color: #10b981;
     --warning-color: #f59e0b;
     --error-color: #ef4444;
@@ -27,7 +27,8 @@
     --font-weight-bold: 700;
 
     /* Layout */
-    --container-max-width: 1200px;
+    --container-max-width: 1450px;  /* Main content container */
+    --header-footer-width: 1500px;  /* Header and footer width */
     --border-radius: 8px;
     --border-radius-lg: 12px;
     --border-radius-xl: 16px;

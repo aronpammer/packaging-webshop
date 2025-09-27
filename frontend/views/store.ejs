@@ -46,12 +46,24 @@
                                 <span class="filter-label"><%= siteSettings.allCategoriesText %></span>
                                 <span class="filter-count">(<%= totalProductCount %>)</span>
                             </a>
-                            <% productCategories.forEach(category => { %>
-                                <a href="/store?category=<%= category.slug %>" class="filter-option <% if (currentCategory === category.slug) { %>active<% } %>">
-                                    <span class="filter-label"><%= category.name %></span>
-                                    <span class="filter-count">(<%= category.productCount %>)</span>
-                                </a>
-                            <% }) %>
+                            <%
+                            // Helper function to render categories recursively
+                            function renderCategories(categories, level = 0) {
+                                categories.forEach(category => { %>
+                                    <a href="/store?category=<%= category.slug %>"
+                                       class="filter-option <% if (currentCategory === category.slug) { %>active<% } %>"
+                                       style="padding-left: <%= (level * 20) %>px">
+                                        <span class="filter-label"><%= category.name %></span>
+                                        <span class="filter-count">(<%= category.productCount || 0 %>)</span>
+                                    </a>
+                                    <% if (category.childCategories && category.childCategories.length > 0) {
+                                        renderCategories(category.childCategories, level + 1);
+                                    }
+                                });
+                            }
+                            // Render all categories with hierarchy
+                            renderCategories(productCategories);
+                            %>
                         </div>
                     </div>
 
