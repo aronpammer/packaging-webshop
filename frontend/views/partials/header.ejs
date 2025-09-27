@@ -1,70 +1,338 @@
+<!-- Sidebar -->
+<div class="sidebar-overlay" onclick="closeSidebar()"></div>
+<div class="sidebar" id="sidebar">
+    <!-- Main Panel -->
+    <div class="sidebar-panel active" id="main-panel">
+        <div class="sidebar-header">
+            <i class="fas fa-user-circle"></i>
+            <span><%= siteSettings.sidebarWelcomeText %></span>
+            <button class="sidebar-close" onclick="closeSidebar()">&times;</button>
+        </div>
+
+        <div class="sidebar-content">
+            <h3 class="sidebar-section-title"><%= siteSettings.sidebarDepartmentText %></h3>
+            <ul class="sidebar-nav">
+                <% if (productCategories && productCategories.length > 0) { %>
+                    <% productCategories.forEach(category => { %>
+                        <li>
+                            <% if (category.childCategories && category.childCategories.length > 0) { %>
+                                <a href="/product-category/<%= category.slug %>" onclick="event.preventDefault(); openCategoryPanel('<%= category.slug %>', '<%= category.name %>', <%= JSON.stringify(category.childCategories || []) %>)">
+                                    <%= category.name %>
+                                    <i class="fas fa-chevron-right nav-arrow"></i>
+                                </a>
+                            <% } else { %>
+                                <a href="/product-category/<%= category.slug %>">
+                                    <%= category.name %>
+                                </a>
+                            <% } %>
+                        </li>
+                    <% }) %>
+                <% } %>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Dynamic Category Panel -->
+    <div class="sidebar-panel" id="category-panel">
+        <div class="sidebar-subheader">
+            <button class="sidebar-back" onclick="slideBack()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <span class="panel-title">MAIN MENU</span>
+        </div>
+        <div class="sidebar-content" id="category-content">
+            <!-- Content will be dynamically inserted here -->
+        </div>
+    </div>
+
+    <!-- Sub-subcategory Panel -->
+    <div class="sidebar-panel" id="subcategory-panel">
+        <div class="sidebar-subheader">
+            <button class="sidebar-back" onclick="slideBackFromSub()">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+            <span class="panel-title">SUB MENU</span>
+        </div>
+        <div class="sidebar-content" id="subcategory-content">
+            <!-- Content will be dynamically inserted here -->
+        </div>
+    </div>
+</div>
+
 <!-- Header -->
 <header class="header">
+    <!-- Top Navigation Bar -->
     <div class="header-top">
         <div class="container">
-            <div class="row">
-                <div class="contact-info">
-                    <span><i class="fas fa-phone"></i> <%= siteSettings.phone %></span>
-                    <span><i class="fas fa-envelope"></i> <%= siteSettings.email %></span>
-                    <span><i class="fas fa-clock"></i> <%= siteSettings.businessHours %></span>
+            <div class="header-top-content">
+                <!-- Logo -->
+                <div class="logo">
+                    <a href="/"><%= siteSettings.companyName %></a>
+                </div>
+
+                <!-- Search Bar -->
+                <div class="search-container">
+                    <input type="text" placeholder="Search products">
+                    <button type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+
+                <!-- Business Info -->
+                <div class="business-info">
+                    <div class="info-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span><%= siteSettings.address %></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-phone"></i>
+                        <span><%= siteSettings.phone %></span>
+                    </div>
+                    <div class="info-item">
+                        <i class="fas fa-clock"></i>
+                        <span><%= siteSettings.businessHours %></span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="header-main">
-        <div class="container">
-            <div class="row">
-                <div class="logo">
-                    <a href="/"><%= siteSettings.companyName %></a>
-                </div>
-                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+    <!-- Bottom Navigation Bar -->
+    <div class="header-bottom">
+        <div class="header-bottom-container">
+            <ul class="bottom-nav">
+                <!-- All Button -->
+            <li>
+                <button class="sidebar-toggle" onclick="openSidebar()">
                     <i class="fas fa-bars"></i>
+                    <span>All</span>
                 </button>
-                <nav class="nav">
-                    <ul class="main-nav">
-                        <% if (menuConfiguration && menuConfiguration.length > 0) { %>
-                            <% menuConfiguration.forEach(menuItem => { %>
-                                <%- include('menu-item', { menuItem: menuItem }) %>
-                            <% }) %>
-                        <% } else { %>
-                            <!-- Fallback to old menu structure if no menu configuration exists -->
-                            <li><a href="/" <% if (typeof category === 'undefined' && typeof product === 'undefined' && typeof page === 'undefined' && (typeof currentPageType === 'undefined' || currentPageType !== 'store')) { %>class="active"<% } %>><%= siteSettings.homeText %></a></li>
-                            <li><a href="/store" <% if (typeof currentPageType !== 'undefined' && currentPageType === 'store') { %>class="active"<% } %>><%= siteSettings.storeText %></a></li>
-                            <% if (navPages && navPages.length > 0) { %>
-                                <% navPages.forEach(navPage => { %>
-                                    <li><a href="/<%= navPage.slug === 'about' || navPage.slug === 'contact' ? navPage.slug : 'page/' + navPage.slug %>" <% if ((typeof page !== 'undefined' && navPage.slug === page.slug) || (typeof currentPage !== 'undefined' && navPage.slug === currentPage)) { %>class="active"<% } %>><%= navPage.title %></a></li>
-                                <% }) %>
-                            <% } %>
-                        <% } %>
-                    </ul>
-                </nav>
-            </div>
+            </li>
+
+            <!-- Main Navigation -->
+            <% if (typeof menuConfiguration !== 'undefined' && menuConfiguration && menuConfiguration.length > 0) { %>
+                <% menuConfiguration.forEach(menuItem => { %>
+                    <% if (menuItem.isActive) { %>
+                        <li>
+                            <a href="<%= menuItem.url %>" <% if (menuItem.openInNewTab) { %>target="_blank"<% } %>>
+                                <% if (menuItem.icon) { %><i class="<%= menuItem.icon %>"></i> <% } %>
+                                <%= menuItem.title %>
+                            </a>
+                        </li>
+                    <% } %>
+                <% }) %>
+            <% } else { %>
+                <!-- Fallback navigation -->
+                <li><a href="/">Home</a></li>
+                <li><a href="/store">All Products</a></li>
+                <% if (typeof productCategories !== 'undefined' && productCategories && productCategories.length > 0) { %>
+                    <% productCategories.slice(0, 5).forEach(category => { %>
+                        <li><a href="/product-category/<%= category.slug %>"><%= category.name %></a></li>
+                    <% }) %>
+                <% } %>
+                <li><a href="/contact">Get Quote</a></li>
+                <% if (typeof navPages !== 'undefined' && navPages && navPages.length > 0) { %>
+                    <% navPages.forEach(navPage => { %>
+                        <li><a href="/<%= navPage.slug === 'about' || navPage.slug === 'contact' ? navPage.slug : 'page/' + navPage.slug %>"><%= navPage.title %></a></li>
+                    <% }) %>
+                <% } %>
+            <% } %>
+        </ul>
         </div>
     </div>
 </header>
 
 <script>
-function toggleMobileMenu() {
-    const mainNav = document.querySelector('.main-nav');
-    mainNav.classList.toggle('active');
+// Store navigation history for back button
+let navigationHistory = [];
+let currentPanel = 'main';
 
-    const toggleButton = document.querySelector('.mobile-menu-toggle i');
-    if (mainNav.classList.contains('active')) {
-        toggleButton.className = 'fas fa-times';
-    } else {
-        toggleButton.className = 'fas fa-bars';
+// Sidebar Functions
+function openSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    sidebar.classList.add('active');
+    overlay.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    // Reset to main panel
+    resetToMainPanel();
+}
+
+function closeSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.querySelector('.sidebar-overlay');
+    sidebar.classList.remove('active');
+    overlay.classList.remove('active');
+    document.body.style.overflow = '';
+
+    // Reset panels when closing
+    setTimeout(() => {
+        resetToMainPanel();
+    }, 300);
+}
+
+function resetToMainPanel() {
+    document.querySelectorAll('.sidebar-panel').forEach(panel => {
+        panel.classList.remove('active', 'slide-out-left', 'slide-in-right');
+    });
+    document.getElementById('main-panel').classList.add('active');
+    navigationHistory = [];
+    currentPanel = 'main';
+}
+
+function openCategoryPanel(categorySlug, categoryName, childCategories) {
+    const mainPanel = document.getElementById('main-panel');
+    const categoryPanel = document.getElementById('category-panel');
+    const categoryContent = document.getElementById('category-content');
+    const panelTitle = categoryPanel.querySelector('.panel-title');
+
+    // Update panel title
+    panelTitle.textContent = 'MAIN MENU';
+
+    // Build category content - same style as main menu
+    let html = `<a href="/product-category/${categorySlug}" class="sidebar-section-title-link">
+                    <h3 class="sidebar-section-title">${categoryName}</h3>
+                </a>
+                <ul class="sidebar-nav">`;
+
+    if (childCategories && childCategories.length > 0) {
+        childCategories.forEach(subcat => {
+            const hasChildren = subcat.childCategories && subcat.childCategories.length > 0;
+            if (hasChildren) {
+                html += `<li>
+                    <a href="/product-category/${subcat.slug}" onclick="event.preventDefault(); openSubcategoryPanel('${subcat.slug}', '${subcat.name}', ${JSON.stringify(subcat.childCategories || [])}, '/product-category/${subcat.slug}')">
+                        ${subcat.name}
+                        <i class="fas fa-chevron-right nav-arrow"></i>
+                    </a>
+                </li>`;
+            } else {
+                html += `<li>
+                    <a href="/product-category/${subcat.slug}">
+                        ${subcat.name}
+                    </a>
+                </li>`;
+            }
+        });
+    }
+
+    html += `</ul>`;
+    categoryContent.innerHTML = html;
+
+    // Add to history
+    navigationHistory.push({ panel: 'main', data: null });
+    currentPanel = 'category';
+
+    // Animate panels
+    mainPanel.classList.add('slide-out-left');
+    categoryPanel.classList.add('active');
+
+    setTimeout(() => {
+        mainPanel.classList.remove('active');
+    }, 300);
+}
+
+function openSubcategoryPanel(categorySlug, categoryName, childCategories, categoryUrl) {
+    const categoryPanel = document.getElementById('category-panel');
+    const subcategoryPanel = document.getElementById('subcategory-panel');
+    const subcategoryContent = document.getElementById('subcategory-content');
+    const panelTitle = subcategoryPanel.querySelector('.panel-title');
+
+    // Update panel title
+    panelTitle.textContent = 'MAIN MENU';
+
+    // Build subcategory content - same style as main menu
+    let html = `<a href="${categoryUrl || '/product-category/' + categorySlug}" class="sidebar-section-title-link">
+                    <h3 class="sidebar-section-title">${categoryName}</h3>
+                </a>
+                <ul class="sidebar-nav">`;
+
+    if (childCategories && childCategories.length > 0) {
+        childCategories.forEach(cat => {
+            const hasChildren = cat.childCategories && cat.childCategories.length > 0;
+            if (hasChildren) {
+                html += `<li>
+                    <a href="/product-category/${cat.slug}" onclick="event.preventDefault(); openSubSubcategoryPanel('${cat.slug}', '${cat.name}', ${JSON.stringify(cat.childCategories || [])}, '/product-category/${cat.slug}')">
+                        ${cat.name}
+                        <i class="fas fa-chevron-right nav-arrow"></i>
+                    </a>
+                </li>`;
+            } else {
+                html += `<li>
+                    <a href="/product-category/${cat.slug}">
+                        ${cat.name}
+                    </a>
+                </li>`;
+            }
+        });
+    }
+
+    html += `</ul>`;
+    subcategoryContent.innerHTML = html;
+
+    // Add to history
+    navigationHistory.push({ panel: 'category', data: { categoryId, categoryName, childCategories } });
+    currentPanel = 'subcategory';
+
+    // Animate panels
+    categoryPanel.classList.add('slide-out-left');
+    subcategoryPanel.classList.add('active');
+
+    setTimeout(() => {
+        categoryPanel.classList.remove('active');
+    }, 300);
+}
+
+// Add function for even deeper navigation if needed
+function openSubSubcategoryPanel(categorySlug, categoryName, childCategories, categoryUrl) {
+    // For now, just navigate to the category page
+    window.location.href = categoryUrl;
+}
+
+function slideBack() {
+    if (navigationHistory.length > 0) {
+        const previousState = navigationHistory.pop();
+        const mainPanel = document.getElementById('main-panel');
+        const categoryPanel = document.getElementById('category-panel');
+
+        categoryPanel.classList.remove('active');
+        categoryPanel.classList.add('slide-out-right');
+
+        mainPanel.classList.remove('slide-out-left');
+        mainPanel.classList.add('active');
+
+        setTimeout(() => {
+            categoryPanel.classList.remove('slide-out-right');
+        }, 300);
+
+        currentPanel = 'main';
     }
 }
 
-// Close mobile menu when clicking outside
-document.addEventListener('click', function(event) {
-    const nav = document.querySelector('.main-nav');
-    const toggleButton = document.querySelector('.mobile-menu-toggle');
+function slideBackFromSub() {
+    if (navigationHistory.length > 0) {
+        const previousState = navigationHistory.pop();
+        const categoryPanel = document.getElementById('category-panel');
+        const subcategoryPanel = document.getElementById('subcategory-panel');
 
-    if (!nav.contains(event.target) && !toggleButton.contains(event.target)) {
-        nav.classList.remove('active');
-        toggleButton.querySelector('i').className = 'fas fa-bars';
+        subcategoryPanel.classList.remove('active');
+        subcategoryPanel.classList.add('slide-out-right');
+
+        categoryPanel.classList.remove('slide-out-left');
+        categoryPanel.classList.add('active');
+
+        setTimeout(() => {
+            subcategoryPanel.classList.remove('slide-out-right');
+        }, 300);
+
+        currentPanel = 'category';
+    }
+}
+
+// Close sidebar with Escape key
+document.addEventListener('keydown', function(event) {
+    if (event.key === 'Escape') {
+        closeSidebar();
     }
 });
 </script>

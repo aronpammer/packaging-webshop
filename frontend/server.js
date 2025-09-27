@@ -130,7 +130,11 @@ async function getSiteSettings() {
         // New navigation fields
         productsText: settings?.productsText || 'Termékek',
         aboutText: settings?.aboutText || 'Rólunk',
-        companyMotto: settings?.companyMotto || 'Professzionális csomagolástechnikai megoldások'
+        companyMotto: settings?.companyMotto || 'Professzionális csomagolástechnikai megoldások',
+
+        // Sidebar Text
+        sidebarDepartmentText: settings?.sidebarDepartmentText || 'Shop by Category',
+        sidebarWelcomeText: settings?.sidebarWelcomeText || 'Welcome'
     };
 }
 
@@ -317,27 +321,47 @@ function getMenuItemUrl(item) {
     }
 }
 
+// Helper function to fetch common data needed across all pages
+async function getCommonPageData() {
+    const [productCategoriesData, pagesData, siteSettings, menuConfiguration] = await Promise.all([
+        fetchFromStrapi('/product-categories?populate[parentCategory]=true&populate[image]=true&sort=sortOrder:asc'),
+        fetchFromStrapi('/pages?sort=navigationOrder:asc'),
+        getSiteSettings(),
+        getMenuConfiguration()
+    ]);
+
+    const productCategories = buildCategoryHierarchy(productCategoriesData?.data || []);
+
+    return {
+        productCategories,
+        navPages: pagesData?.data || [],
+        siteSettings,
+        menuConfiguration,
+        STRAPI_URL
+    };
+}
+
 // Routes
 
 // Homepage
 app.get('/', async (req, res) => {
     try {
-        const [productCategoriesData, featuredProductsData, pagesData, homepageData, siteSettings, menuConfiguration, latestProductsData] = await Promise.all([
-            fetchFromStrapi('/product-categories?populate[image]=true&populate[parentCategory]=true&sort=sortOrder:asc'),
+        // Get common data
+        const commonData = await getCommonPageData();
+
+        // Get page-specific data
+        const [featuredProductsData, homepageData, latestProductsData] = await Promise.all([
             fetchFromStrapi('/products?populate=*&filters[featured][$eq]=true&sort=sortOrder:asc'),
-            fetchFromStrapi('/pages?sort=navigationOrder:asc'),
             fetchFromStrapi('/homepage?populate=*'),
-            getSiteSettings(),
-            getMenuConfiguration(),
             fetchFromStrapi('/products?populate=*&sort=createdAt:desc&pagination[limit]=5')
         ]);
 
         // Get homepage content from CMS or use defaults
         const homepage = homepageData?.data;
         const heroContent = {
-            title: homepage?.heroTitle || siteSettings.heroTitle,
-            description: homepage?.heroDescription || siteSettings.heroDescription,
-            buttonText: homepage?.heroButtonText || siteSettings.heroButtonText,
+            title: homepage?.heroTitle || commonData.siteSettings.heroTitle,
+            description: homepage?.heroDescription || commonData.siteSettings.heroDescription,
+            buttonText: homepage?.heroButtonText || commonData.siteSettings.heroButtonText,
             buttonLink: homepage?.heroButtonLink || '/store',
             backgroundImage: homepage?.heroBackgroundImage?.url || null
         };
@@ -349,37 +373,27 @@ app.get('/', async (req, res) => {
         // Configure action buttons
         const actionButtons = {
             viewAllProducts: {
-                text: homepage?.viewAllProductsButtonText || siteSettings.viewAllProductsButtonText,
+                text: homepage?.viewAllProductsButtonText || commonData.siteSettings.viewAllProductsButtonText,
                 link: homepage?.viewAllProductsButtonLink || '/store',
                 show: homepage?.showViewAllProductsButton !== false
             },
             getQuote: {
-                text: homepage?.getQuoteButtonText || siteSettings.getQuoteButtonText,
+                text: homepage?.getQuoteButtonText || commonData.siteSettings.getQuoteButtonText,
                 link: homepage?.getQuoteButtonLink || '/contact',
                 show: homepage?.showGetQuoteButton !== false
             }
         };
 
-        const productCategories = buildCategoryHierarchy(productCategoriesData?.data || []);
-
-        console.log('Raw productCategoriesData:', productCategoriesData?.data?.length || 0);
-        console.log('Built productCategories:', productCategories?.length || 0);
-        console.log('productCategories type:', typeof productCategories);
-
         res.render('index', {
-            categories: productCategories,
-            productCategories: productCategories,
+            ...commonData,
+            categories: commonData.productCategories,
             featuredProducts: featuredProductsData?.data || [],
             latestProducts: latestProductsData?.data || [],
-            navPages: pagesData?.data || [],
-            menuConfiguration: menuConfiguration,
             heroContent: heroContent,
             homepage: homepage,
             actionButtons: actionButtons,
             showLatestProducts: showLatestProducts,
-            siteSettings: siteSettings,
-            currentPageType: 'home',
-            STRAPI_URL
+            currentPageType: 'home'
         });
     } catch (error) {
         console.error('Error loading homepage:', error);
@@ -393,7 +407,7 @@ app.get('/product-category/:slug', async (req, res) => {
         const [categoryData, productsData, productCategoriesData, pagesData, siteSettings, menuConfiguration] = await Promise.all([
             fetchFromStrapi(`/product-categories?filters[slug][$eq]=${req.params.slug}&populate=*`),
             fetchFromStrapi(`/products?populate=*&filters[productCategory][slug][$eq]=${req.params.slug}&sort=sortOrder:asc`),
-            fetchFromStrapi('/product-categories?populate[image]=true&populate[parentCategory]=true&sort=sortOrder:asc'),
+            fetchFromStrapi('/product-categories?populate[parentCategory]=true&populate[image]=true&sort=sortOrder:asc'),
             fetchFromStrapi('/pages?sort=navigationOrder:asc'),
             getSiteSettings(),
             getMenuConfiguration()
@@ -413,12 +427,15 @@ app.get('/product-category/:slug', async (req, res) => {
                     String(cat.parentCategory.id) === String(category.id));
         });
 
+        // Build the category hierarchy for the sidebar - THIS IS THE FIX
+        const productCategories = buildCategoryHierarchy(productCategoriesData?.data || []);
+
         res.render('category', {
             category: category,
             products: productsData?.data || [],
             subcategories: subcategories,
             categories: productCategoriesData?.data || [],
-            productCategories: productCategoriesData?.data || [],
+            productCategories: productCategories, // Use hierarchical categories
             navPages: pagesData?.data || [],
             menuConfiguration: menuConfiguration,
             siteSettings: siteSettings,
@@ -437,7 +454,7 @@ app.get('/product/:slug', async (req, res) => {
     try {
         const [productData, categoriesData, pagesData, siteSettings, menuConfiguration] = await Promise.all([
             fetchFromStrapi(`/products?filters[slug][$eq]=${req.params.slug}&populate=*`),
-            fetchFromStrapi('/product-categories?populate[image]=true&populate[parentCategory]=true&sort=sortOrder:asc'),
+            fetchFromStrapi('/product-categories?populate[parentCategory]=true&populate[image]=true&sort=sortOrder:asc'),
             fetchFromStrapi('/pages?sort=navigationOrder:asc'),
             getSiteSettings(),
             getMenuConfiguration()
@@ -448,9 +465,13 @@ app.get('/product/:slug', async (req, res) => {
             return res.status(404).send('Product not found');
         }
 
+        // Build the category hierarchy for the sidebar
+        const productCategories = buildCategoryHierarchy(categoriesData?.data || []);
+
         res.render('product', {
             product: product,
             categories: categoriesData?.data || [],
+            productCategories: productCategories, // Add hierarchical categories for sidebar
             navPages: pagesData?.data || [],
             menuConfiguration: menuConfiguration,
             siteSettings: siteSettings,
@@ -468,7 +489,7 @@ app.get('/page/:slug', async (req, res) => {
     try {
         const [pageData, categoriesData, pagesData, siteSettings, menuConfiguration] = await Promise.all([
             fetchFromStrapi(`/pages?filters[slug][$eq]=${req.params.slug}&populate=*`),
-            fetchFromStrapi('/product-categories?populate[image]=true&populate[parentCategory]=true&sort=sortOrder:asc'),
+            fetchFromStrapi('/product-categories?populate=deep&sort=sortOrder:asc'),
             fetchFromStrapi('/pages?sort=navigationOrder:asc'),
             getSiteSettings(),
             getMenuConfiguration()
@@ -499,7 +520,7 @@ app.get('/about', async (req, res) => {
     try {
         const [pageData, categoriesData, pagesData, siteSettings, menuConfiguration] = await Promise.all([
             fetchFromStrapi(`/pages?filters[slug][$eq]=about&populate=*`),
-            fetchFromStrapi('/product-categories?populate[image]=true&populate[parentCategory]=true&sort=sortOrder:asc'),
+            fetchFromStrapi('/product-categories?populate=deep&sort=sortOrder:asc'),
             fetchFromStrapi('/pages?sort=navigationOrder:asc'),
             getSiteSettings(),
             getMenuConfiguration()
@@ -587,7 +608,7 @@ app.get('/contact', async (req, res) => {
     try {
         const [pageData, categoriesData, pagesData, siteSettings, menuConfiguration] = await Promise.all([
             fetchFromStrapi(`/pages?filters[slug][$eq]=contact&populate=*`),
-            fetchFromStrapi('/product-categories?populate[image]=true&populate[parentCategory]=true&sort=sortOrder:asc'),
+            fetchFromStrapi('/product-categories?populate=deep&sort=sortOrder:asc'),
             fetchFromStrapi('/pages?sort=navigationOrder:asc'),
             getSiteSettings(),
             getMenuConfiguration()
@@ -633,7 +654,7 @@ app.get('/store', async (req, res) => {
         const filterString = filterParams.length > 0 ? '&' + filterParams.join('&') : '';
 
         const [categoriesData, productsData, pagesData, allProductsData, siteSettings, menuConfiguration, storeData] = await Promise.all([
-            fetchFromStrapi('/product-categories?populate[image]=true&populate[parentCategory]=true&sort=sortOrder:asc'),
+            fetchFromStrapi('/product-categories?populate[parentCategory]=true&populate[image]=true&sort=sortOrder:asc'),
             fetchFromStrapi(`/products?populate=*&sort=sortOrder:asc${filterString}`),
             fetchFromStrapi('/pages?sort=navigationOrder:asc'),
             fetchFromStrapi('/products?populate=productCategory&sort=sortOrder:asc'),
@@ -660,6 +681,19 @@ app.get('/store', async (req, res) => {
             ...category,
             productCount: categoryProductCounts[category.slug] || 0
         }));
+
+        // Build the category hierarchy for the sidebar
+        const productCategories = buildCategoryHierarchy(categoriesData?.data || []);
+
+        // Add product counts to hierarchical categories (for sidebar)
+        const addCountsToHierarchy = (categories) => {
+            return categories.map(cat => ({
+                ...cat,
+                productCount: categoryProductCounts[cat.slug] || 0,
+                childCategories: cat.childCategories ? addCountsToHierarchy(cat.childCategories) : []
+            }));
+        };
+        const productCategoriesWithCounts = addCountsToHierarchy(productCategories);
 
         // Get store content from CMS or use defaults
         const store = storeData?.data;
@@ -692,7 +726,7 @@ app.get('/store', async (req, res) => {
 
         res.render('store', {
             categories: categoriesWithCounts,
-            productCategories: categoriesWithCounts,
+            productCategories: productCategoriesWithCounts,
             products: productsData?.data || [],
             navPages: pagesData?.data || [],
             menuConfiguration: menuConfiguration,
