@@ -107,7 +107,7 @@
             </div>
             <div class="products-grid-modern">
                 <% featuredProducts.forEach(product => { %>
-                    <div class="product-card-modern">
+                    <a href="/product/<%= product.slug %>" class="product-card-modern product-card-link">
                         <div class="product-image-wrapper">
                             <% if (product.image) { %>
                                 <img src="<%= product.image.url %>" alt="<%= product.name %>" class="product-image-modern">
@@ -123,12 +123,8 @@
                         <div class="product-info-modern">
                             <h3 class="product-name-modern"><%= product.name %></h3>
                             <p class="product-description-modern"><%= product.shortDescription || siteSettings.professionalPackagingEquipmentText %></p>
-                            <a href="/product/<%= product.slug %>" class="product-link-modern">
-                                <span><%= siteSettings.learnMoreText %></span>
-                                <i class="fas fa-arrow-right"></i>
-                            </a>
                         </div>
-                    </div>
+                    </a>
                 <% }) %>
             </div>
             <% if (actionButtons.viewAllProducts.show) { %>
