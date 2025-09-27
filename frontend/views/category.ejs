@@ -36,22 +36,26 @@
 
     <!-- Subcategories Section -->
     <% if (subcategories && subcategories.length > 0) { %>
-    <section class="section" style="background: #f8f9fa;">
+    <section class="categories-modern">
         <div class="container">
-            <div class="categories-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
+            <div class="categories-grid-simple">
                 <% subcategories.forEach(subcat => { %>
-                    <a href="/product-category/<%= subcat.slug %>" class="card category-card" style="text-decoration: none; color: inherit; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; display: block;">
-                        <% if (subcat.image) { %>
-                            <img src="<%= subcat.image.url %>" alt="<%= subcat.name %>" class="card-img">
-                        <% } else { %>
-                            <div class="card-img" style="background: var(--light-gray); display: flex; align-items: center; justify-content: center; height: 200px;">
-                                <i class="fas fa-folder" style="font-size: 3rem; color: var(--dark-gray);"></i>
-                            </div>
-                        <% } %>
-                        <div class="card-body">
-                            <h3 class="card-title"><%= subcat.name %></h3>
+                    <a href="/product-category/<%= subcat.slug %>" class="category-card-simple">
+                        <div class="category-image-container">
+                            <% if (subcat.image) { %>
+                                <img src="<%= subcat.image.url %>" alt="<%= subcat.name %>" class="category-image">
+                            <% } else { %>
+                                <div style="width: 100%; height: 100%; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-folder" style="font-size: 3rem; color: #ddd;"></i>
+                                </div>
+                            <% } %>
+                        </div>
+                        <div class="category-info">
+                            <h3 class="category-title"><%= subcat.name %></h3>
                             <% if (subcat.description) { %>
-                                <p class="card-text"><%= subcat.description %></p>
+                                <p class="category-desc"><%= subcat.description %></p>
+                            <% } else { %>
+                                <p class="category-desc"><%= siteSettings.professionalSolutionsText || 'Professional solutions' %></p>
                             <% } %>
                         </div>
                     </a>
@@ -59,37 +63,39 @@
             </div>
         </div>
     </section>
-    <style>
-        .category-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
-        }
-    </style>
     <% } %>
 
     <!-- Products Section -->
     <% if (products.length > 0) { %>
-    <section class="section" style="background: <%= subcategories && subcategories.length > 0 ? '#ffffff' : '#f8f9fa' %>;">
+    <section class="featured-products-modern">
         <div class="container">
-            <h2 style="text-align: center; margin-bottom: 50px;"><%= category.name %> <%= siteSettings.productsText %></h2>
-            <div class="products-grid">
+            <div class="section-header">
+                <h2 class="section-title-modern"><%= category.name %> <%= siteSettings.productsText %></h2>
+                <% if (category.description) { %>
+                    <p class="section-subtitle"><%= category.description %></p>
+                <% } %>
+            </div>
+            <div class="products-grid-modern">
                 <% products.forEach(product => { %>
-                    <div class="card product-card">
-                        <% if (product.image) { %>
-                            <img src="<%= product.image.url %>" alt="<%= product.name %>" class="card-img">
-                        <% } else { %>
-                            <div class="card-img" style="background: var(--light-gray); display: flex; align-items: center; justify-content: center;">
-                                <i class="fas fa-image" style="font-size: 3rem; color: var(--dark-gray);"></i>
-                            </div>
-                        <% } %>
-                        <div class="card-body">
-                            <h3 class="card-title"><%= product.name %></h3>
-                            <p class="card-text"><%= product.shortDescription || siteSettings.professionalPackagingEquipmentText %></p>
-                            <% if (product.featured) { %>
-                                <span class="badge"><%= siteSettings.featuredBadgeText %></span>
-                                <br><br>
+                    <div class="product-card-modern">
+                        <div class="product-image-wrapper">
+                            <% if (product.image) { %>
+                                <img src="<%= product.image.url %>" alt="<%= product.name %>" class="product-image-modern">
+                            <% } else { %>
+                                <div style="width: 100%; height: 100%; background: #f8f9fa; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-image" style="font-size: 3rem; color: #ddd;"></i>
+                                </div>
                             <% } %>
-                            <a href="/product/<%= product.slug %>" class="btn btn-primary"><%= siteSettings.learnMoreText %></a>
+                            <% if (product.featured) { %>
+                                <span class="badge-modern"><%= siteSettings.featuredBadgeText %></span>
+                            <% } %>
+                        </div>
+                        <div class="product-content-modern">
+                            <h3 class="product-title-modern"><%= product.name %></h3>
+                            <p class="product-desc-modern"><%= product.shortDescription || siteSettings.professionalPackagingEquipmentText %></p>
+                            <div class="product-footer-modern">
+                                <a href="/product/<%= product.slug %>" class="btn btn-primary btn-sm"><%= siteSettings.learnMoreText %></a>
+                            </div>
                         </div>
                     </div>
                 <% }) %>
