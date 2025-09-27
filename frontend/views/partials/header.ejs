@@ -158,11 +158,9 @@
                 <% }) %>
             <% } %>
 
-            <li><a href="/contact">Get Quote</a></li>
-
             <% if (typeof navPages !== 'undefined' && navPages && navPages.length > 0) { %>
                 <% navPages.forEach(navPage => { %>
-                    <li><a href="/<%= navPage.slug === 'about' || navPage.slug === 'contact' ? navPage.slug : 'page/' + navPage.slug %>"><%= navPage.title %></a></li>
+                    <li><a href="/page/<%= navPage.slug %>"><%= navPage.title %></a></li>
                 <% }) %>
             <% } %>
         </ul>
