@@ -21,6 +21,13 @@ body {
     color: var(--text-dark);
     background-color: var(--white);
     min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Main content wrapper to push footer down */
+main, .main-content {
+    flex: 1 0 auto;
 }
 
 /* Typography */

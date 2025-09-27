@@ -8,6 +8,7 @@
 <body>
     <%- include('partials/header') %>
 
+    <main>
     <!-- Breadcrumb -->
     <div class="breadcrumb">
         <div class="container">
@@ -65,7 +66,7 @@
                                     <i class="fas fa-phone"></i>
                                     <span><%= siteSettings.callButtonText || 'Call' %> <%= siteSettings.phone %></span>
                                 </a>
-                                <a href="mailto:<%= siteSettings.email %>?subject=Inquiry about <%= product.name %>" class="btn btn-outline btn-contact">
+                                <a href="mailto:<%= siteSettings.email %>?subject=<%= product.name %>" class="btn btn-outline btn-contact">
                                     <i class="fas fa-envelope"></i>
                                     <span><%= siteSettings.emailButtonText || 'Email Inquiry' %></span>
                                 </a>
@@ -133,6 +134,7 @@
         </div>
     </section>
     <% } %>
+    </main>
 
     <%- include('partials/footer') %>
 </body>

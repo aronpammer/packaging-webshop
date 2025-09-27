@@ -323,7 +323,7 @@ function getMenuItemUrl(item) {
 app.get('/', async (req, res) => {
     try {
         const [productCategoriesData, featuredProductsData, pagesData, homepageData, siteSettings, menuConfiguration, latestProductsData] = await Promise.all([
-            fetchFromStrapi('/product-categories?populate=image&sort=sortOrder:asc'),
+            fetchFromStrapi('/product-categories?populate[image]=true&populate[parentCategory]=true&sort=sortOrder:asc'),
             fetchFromStrapi('/products?populate=*&filters[featured][$eq]=true&sort=sortOrder:asc'),
             fetchFromStrapi('/pages?sort=navigationOrder:asc'),
             fetchFromStrapi('/homepage?populate=*'),
@@ -393,7 +393,7 @@ app.get('/product-category/:slug', async (req, res) => {
         const [categoryData, productsData, productCategoriesData, pagesData, siteSettings, menuConfiguration] = await Promise.all([
             fetchFromStrapi(`/product-categories?filters[slug][$eq]=${req.params.slug}&populate=*`),
             fetchFromStrapi(`/products?populate=*&filters[productCategory][slug][$eq]=${req.params.slug}&sort=sortOrder:asc`),
-            fetchFromStrapi('/product-categories?populate=image&sort=sortOrder:asc'),
+            fetchFromStrapi('/product-categories?populate[image]=true&populate[parentCategory]=true&sort=sortOrder:asc'),
             fetchFromStrapi('/pages?sort=navigationOrder:asc'),
             getSiteSettings(),
             getMenuConfiguration()
@@ -404,9 +404,19 @@ app.get('/product-category/:slug', async (req, res) => {
             return res.status(404).send('Product category not found');
         }
 
+        // Filter subcategories - categories that have the current category as parent
+        const allCategories = productCategoriesData?.data || [];
+        const subcategories = allCategories.filter(cat => {
+            // Handle both numeric and string ID comparisons
+            return cat.parentCategory &&
+                   (cat.parentCategory.id === category.id ||
+                    String(cat.parentCategory.id) === String(category.id));
+        });
+
         res.render('category', {
             category: category,
             products: productsData?.data || [],
+            subcategories: subcategories,
             categories: productCategoriesData?.data || [],
             productCategories: productCategoriesData?.data || [],
             navPages: pagesData?.data || [],
@@ -427,7 +437,7 @@ app.get('/product/:slug', async (req, res) => {
     try {
         const [productData, categoriesData, pagesData, siteSettings, menuConfiguration] = await Promise.all([
             fetchFromStrapi(`/products?filters[slug][$eq]=${req.params.slug}&populate=*`),
-            fetchFromStrapi('/product-categories?populate=image&sort=sortOrder:asc'),
+            fetchFromStrapi('/product-categories?populate[image]=true&populate[parentCategory]=true&sort=sortOrder:asc'),
             fetchFromStrapi('/pages?sort=navigationOrder:asc'),
             getSiteSettings(),
             getMenuConfiguration()
@@ -458,7 +468,7 @@ app.get('/page/:slug', async (req, res) => {
     try {
         const [pageData, categoriesData, pagesData, siteSettings, menuConfiguration] = await Promise.all([
             fetchFromStrapi(`/pages?filters[slug][$eq]=${req.params.slug}&populate=*`),
-            fetchFromStrapi('/product-categories?populate=image&sort=sortOrder:asc'),
+            fetchFromStrapi('/product-categories?populate[image]=true&populate[parentCategory]=true&sort=sortOrder:asc'),
             fetchFromStrapi('/pages?sort=navigationOrder:asc'),
             getSiteSettings(),
             getMenuConfiguration()
@@ -489,7 +499,7 @@ app.get('/about', async (req, res) => {
     try {
         const [pageData, categoriesData, pagesData, siteSettings, menuConfiguration] = await Promise.all([
             fetchFromStrapi(`/pages?filters[slug][$eq]=about&populate=*`),
-            fetchFromStrapi('/product-categories?populate=image&sort=sortOrder:asc'),
+            fetchFromStrapi('/product-categories?populate[image]=true&populate[parentCategory]=true&sort=sortOrder:asc'),
             fetchFromStrapi('/pages?sort=navigationOrder:asc'),
             getSiteSettings(),
             getMenuConfiguration()
@@ -577,7 +587,7 @@ app.get('/contact', async (req, res) => {
     try {
         const [pageData, categoriesData, pagesData, siteSettings, menuConfiguration] = await Promise.all([
             fetchFromStrapi(`/pages?filters[slug][$eq]=contact&populate=*`),
-            fetchFromStrapi('/product-categories?populate=image&sort=sortOrder:asc'),
+            fetchFromStrapi('/product-categories?populate[image]=true&populate[parentCategory]=true&sort=sortOrder:asc'),
             fetchFromStrapi('/pages?sort=navigationOrder:asc'),
             getSiteSettings(),
             getMenuConfiguration()
@@ -623,7 +633,7 @@ app.get('/store', async (req, res) => {
         const filterString = filterParams.length > 0 ? '&' + filterParams.join('&') : '';
 
         const [categoriesData, productsData, pagesData, allProductsData, siteSettings, menuConfiguration, storeData] = await Promise.all([
-            fetchFromStrapi('/product-categories?populate=image&sort=sortOrder:asc'),
+            fetchFromStrapi('/product-categories?populate[image]=true&populate[parentCategory]=true&sort=sortOrder:asc'),
             fetchFromStrapi(`/products?populate=*&sort=sortOrder:asc${filterString}`),
             fetchFromStrapi('/pages?sort=navigationOrder:asc'),
             fetchFromStrapi('/products?populate=productCategory&sort=sortOrder:asc'),

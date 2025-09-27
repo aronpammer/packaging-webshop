@@ -24,7 +24,7 @@
 
 /* Section Spacing */
 .section {
-    padding: 60px 0;
+    padding: 20px 0;
 }
 
 .section-gray {
@@ -87,7 +87,7 @@
     }
 
     .section {
-        padding: 40px 0;
+        padding: 20px 0;
     }
 
     .section-title {

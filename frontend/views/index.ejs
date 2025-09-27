@@ -8,6 +8,7 @@
 <body>
     <%- include('partials/header') %>
 
+    <main>
     <!-- Hero Section -->
     <section class="hero-simple" <% if (heroContent.backgroundImage) { %>style="background-image: url('<%= heroContent.backgroundImage %>')"<% } %>>
         <div class="container">
@@ -138,8 +139,7 @@
         </div>
     </section>
     <% } %>
-
-
+    </main>
 
     <%- include('partials/footer') %>
 </body>

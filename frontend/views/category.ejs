@@ -9,6 +9,7 @@
     <% currentCategory = category; %>
     <%- include('partials/header') %>
 
+    <main>
     <!-- Breadcrumb -->
     <div class="breadcrumb">
         <div class="container">
@@ -21,8 +22,8 @@
         <div class="container">
             <div class="row">
                 <div class="col-8">
-                    <h1><%= category.name %></h1>
-                    <p style="font-size: 1.1rem;"><%= category.description %></p>
+                    <h1 style="margin-bottom: 10px;"><%= category.name %></h1>
+                    <p style="font-size: 1.1rem; margin-bottom: 0;"><%= category.description %></p>
                 </div>
                 <div class="col-4">
                     <% if (category.image) { %>
@@ -33,9 +34,42 @@
         </div>
     </section>
 
+    <!-- Subcategories Section -->
+    <% if (subcategories && subcategories.length > 0) { %>
+    <section class="section" style="background: #f8f9fa;">
+        <div class="container">
+            <div class="categories-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px;">
+                <% subcategories.forEach(subcat => { %>
+                    <a href="/product-category/<%= subcat.slug %>" class="card category-card" style="text-decoration: none; color: inherit; transition: transform 0.2s, box-shadow 0.2s; cursor: pointer; display: block;">
+                        <% if (subcat.image) { %>
+                            <img src="<%= subcat.image.url %>" alt="<%= subcat.name %>" class="card-img">
+                        <% } else { %>
+                            <div class="card-img" style="background: var(--light-gray); display: flex; align-items: center; justify-content: center; height: 200px;">
+                                <i class="fas fa-folder" style="font-size: 3rem; color: var(--dark-gray);"></i>
+                            </div>
+                        <% } %>
+                        <div class="card-body">
+                            <h3 class="card-title"><%= subcat.name %></h3>
+                            <% if (subcat.description) { %>
+                                <p class="card-text"><%= subcat.description %></p>
+                            <% } %>
+                        </div>
+                    </a>
+                <% }) %>
+            </div>
+        </div>
+    </section>
+    <style>
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important;
+        }
+    </style>
+    <% } %>
+
     <!-- Products Section -->
     <% if (products.length > 0) { %>
-    <section class="section" style="background: #f8f9fa;">
+    <section class="section" style="background: <%= subcategories && subcategories.length > 0 ? '#ffffff' : '#f8f9fa' %>;">
         <div class="container">
             <h2 style="text-align: center; margin-bottom: 50px;"><%= category.name %> <%= siteSettings.productsText %></h2>
             <div class="products-grid">
@@ -62,7 +96,7 @@
             </div>
         </div>
     </section>
-    <% } else { %>
+    <% } else if (!subcategories || subcategories.length === 0) { %>
     <section class="section" style="text-align: center; background: #f8f9fa;">
         <div class="container">
             <h2><%= siteSettings.noProductsAvailableTitle %></h2>
@@ -71,6 +105,7 @@
         </div>
     </section>
     <% } %>
+    </main>
 
     <%- include('partials/footer') %>
 </body>
