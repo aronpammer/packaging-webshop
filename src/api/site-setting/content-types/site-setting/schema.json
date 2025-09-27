@@ -356,6 +356,11 @@
       "type": "string",
       "required": false,
       "default": "Search products"
+    },
+    "sidebarToggleText": {
+      "type": "string",
+      "required": false,
+      "default": "All"
     }
   }
 }

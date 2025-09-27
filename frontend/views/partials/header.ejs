@@ -105,12 +105,12 @@
             <li>
                 <button class="sidebar-toggle" onclick="openSidebar()">
                     <i class="fas fa-bars"></i>
-                    <span>All</span>
+                    <span><%= siteSettings.sidebarToggleText || 'All' %></span>
                 </button>
             </li>
 
             <!-- Main Navigation -->
-            <li><a href="/">Home</a></li>
+            <li><a href="/"><%= siteSettings.homeText || 'Home' %></a></li>
 
             <% if (typeof productCategories !== 'undefined' && productCategories && productCategories.length > 0) { %>
                 <% productCategories.forEach(category => { %>
