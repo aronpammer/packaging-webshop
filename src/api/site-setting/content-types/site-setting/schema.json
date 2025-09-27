@@ -361,6 +361,12 @@
       "type": "string",
       "required": false,
       "default": "All"
+    },
+    "logo": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": ["images"]
     }
   }
 }

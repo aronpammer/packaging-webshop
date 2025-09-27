@@ -67,7 +67,15 @@
             <div class="header-top-content">
                 <!-- Logo -->
                 <div class="logo">
-                    <a href="/"><%= siteSettings.companyName %></a>
+                    <a href="/">
+                        <% if (siteSettings.logo && siteSettings.logo.url) { %>
+                            <img src="<%= siteSettings.logo.url.startsWith('http') ? siteSettings.logo.url : 'http://localhost:1337' + siteSettings.logo.url %>"
+                                 alt="<%= siteSettings.companyName %>"
+                                 class="logo-image" />
+                        <% } else { %>
+                            <%= siteSettings.companyName %>
+                        <% } %>
+                    </a>
                 </div>
 
                 <!-- Search Bar -->
@@ -358,6 +366,28 @@ document.addEventListener('keydown', function(event) {
 </script>
 
 <style>
+/* Logo styles */
+.logo-image {
+    height: 40px;
+    width: auto;
+    max-width: 150px;
+    object-fit: contain;
+    display: block;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    padding: 4px 8px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    transition: border 0.2s ease;
+}
+
+.logo:hover {
+    border: 1px solid white;
+}
+
 /* Dropdown menu styles for navigation bar */
 .nav-item-with-dropdown {
     position: relative;
