@@ -1,0 +1,76 @@
+/* Navigation Component Styles */
+
+/* Breadcrumb Navigation */
+.breadcrumb {
+    background: var(--light-bg);
+    padding: 12px 0;
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: 24px;
+}
+
+.breadcrumb p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.breadcrumb a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.breadcrumb a:hover {
+    color: var(--primary-hover);
+    text-decoration: underline;
+}
+
+/* Navigation Items */
+.nav-item {
+    position: relative;
+    display: inline-block;
+}
+
+.nav-item.has-dropdown {
+    position: relative;
+}
+
+.nav-link {
+    display: inline-block;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: var(--text-primary);
+    transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+}
+
+.dropdown-trigger {
+    cursor: pointer;
+}
+
+/* Section styles */
+.section {
+    padding: 48px 0;
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.section-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 16px;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+    max-width: 600px;
+    margin: 0 auto;
+}

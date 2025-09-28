@@ -1,0 +1,51 @@
+/* Category Page Styles */
+
+/* Category header */
+.category-page-title {
+    margin-bottom: 10px;
+}
+
+.category-page-description {
+    font-size: 1.1rem;
+    margin-bottom: 0;
+}
+
+.category-page-image {
+    width: 100%;
+    border-radius: var(--border-radius);
+}
+
+/* Empty state styles */
+.category-no-image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-no-image-icon {
+    font-size: 3rem;
+    color: #ddd;
+}
+
+.product-no-image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: #f8f9fa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.product-no-image-icon {
+    font-size: 3rem;
+    color: #ddd;
+}
+
+/* No products section */
+.no-products-section {
+    text-align: center;
+    background: #f8f9fa;
+}

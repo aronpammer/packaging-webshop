@@ -14,9 +14,14 @@
 @import url('./components/cards.css');
 @import url('./components/header.css');
 @import url('./components/footer.css');
+@import url('./components/sidebar.css');
+@import url('./components/dropdown.css');
+@import url('./components/navigation.css');
 
 /* Pages */
 @import url('./pages/homepage.css');
 @import url('./pages/product.css');
 @import url('./pages/store.css');
+@import url('./pages/page.css');
+@import url('./pages/category.css');
 

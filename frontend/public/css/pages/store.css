@@ -2,6 +2,12 @@
    STORE PAGE STYLES
    ============================================= */
 
+/* Category hierarchy indentation */
+.filter-option-level-1 { padding-left: 20px; }
+.filter-option-level-2 { padding-left: 40px; }
+.filter-option-level-3 { padding-left: 60px; }
+.filter-option-level-4 { padding-left: 80px; }
+
 .store-section {
     padding: 48px 0;
 }
