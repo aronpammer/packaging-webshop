@@ -79,12 +79,12 @@
                 </div>
 
                 <!-- Search Bar -->
-                <div class="search-container">
-                    <input type="text" placeholder="<%= siteSettings.headerSearchPlaceholder || 'Search products' %>">
+                <form class="search-container" action="/store" method="GET" onsubmit="return validateSearch(this)">
+                    <input type="text" name="search" placeholder="<%= siteSettings.headerSearchPlaceholder || 'Search products' %>" id="header-search-input">
                     <button type="submit">
                         <i class="fas fa-search"></i>
                     </button>
-                </div>
+                </form>
 
                 <!-- Business Info -->
                 <div class="business-info">
@@ -394,6 +394,17 @@ document.addEventListener('keydown', function(event) {
         closeAllDropdowns();
     }
 });
+
+// Search form validation
+function validateSearch(form) {
+    const searchInput = form.querySelector('input[name="search"]');
+    if (searchInput && searchInput.value.trim() === '') {
+        // If search is empty, just go to /store page
+        window.location.href = '/store';
+        return false;
+    }
+    return true;
+}
 
 // Mobile Dropdown Functions
 function isMobile() {
