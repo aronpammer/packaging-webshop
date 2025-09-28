@@ -407,10 +407,42 @@ app.get('/', async (req, res) => {
 // Product Category page
 app.get('/product-category/:slug', async (req, res) => {
     try {
-        const [categoryData, productsData, productCategoriesData, siteSettings, menuConfiguration] = await Promise.all([
+        // First fetch categories to build hierarchy
+        const productCategoriesData = await fetchFromStrapi('/product-categories?populate[parentCategory]=true&populate[image]=true&sort=sortOrder:asc');
+        const allCategories = productCategoriesData?.data || [];
+
+        // Helper function to recursively get all subcategory slugs (same as in store route)
+        function getAllSubcategorySlugs(categories, parentSlug) {
+            const slugs = [parentSlug];
+            const findChildren = (cats, targetSlug) => {
+                cats.forEach(cat => {
+                    if (cat.parentCategory && cat.parentCategory.slug === targetSlug) {
+                        slugs.push(cat.slug);
+                        findChildren(cats, cat.slug); // Recursively find children of children
+                    }
+                });
+            };
+            findChildren(categories, parentSlug);
+            return slugs;
+        }
+
+        // Get all subcategory slugs for the current category
+        const allCategorySlugs = getAllSubcategorySlugs(allCategories, req.params.slug);
+
+        // Build filter for products - include current category and all subcategories
+        let productFilter = '';
+        if (allCategorySlugs.length === 1) {
+            productFilter = `filters[productCategory][slug][$eq]=${req.params.slug}`;
+        } else {
+            const filterParams = allCategorySlugs.map((slug, index) =>
+                `filters[$or][${index}][productCategory][slug][$eq]=${slug}`
+            );
+            productFilter = filterParams.join('&');
+        }
+
+        const [categoryData, productsData, siteSettings, menuConfiguration] = await Promise.all([
             fetchFromStrapi(`/product-categories?filters[slug][$eq]=${req.params.slug}&populate=*`),
-            fetchFromStrapi(`/products?populate=*&filters[productCategory][slug][$eq]=${req.params.slug}&sort=sortOrder:asc`),
-            fetchFromStrapi('/product-categories?populate[parentCategory]=true&populate[image]=true&sort=sortOrder:asc'),
+            fetchFromStrapi(`/products?populate=*&${productFilter}&sort=sortOrder:asc`),
             getSiteSettings(),
             getMenuConfiguration()
         ]);
@@ -421,7 +453,6 @@ app.get('/product-category/:slug', async (req, res) => {
         }
 
         // Filter subcategories - categories that have the current category as parent
-        const allCategories = productCategoriesData?.data || [];
         const subcategories = allCategories.filter(cat => {
             // Handle both numeric and string ID comparisons
             return cat.parentCategory &&
@@ -429,15 +460,15 @@ app.get('/product-category/:slug', async (req, res) => {
                     String(cat.parentCategory.id) === String(category.id));
         });
 
-        // Build the category hierarchy for the sidebar - THIS IS THE FIX
-        const productCategories = buildCategoryHierarchy(productCategoriesData?.data || []);
+        // Build the category hierarchy for the sidebar
+        const productCategories = buildCategoryHierarchy(allCategories);
 
         res.render('category', {
             category: category,
             products: productsData?.data || [],
             subcategories: subcategories,
-            categories: productCategoriesData?.data || [],
-            productCategories: productCategories, // Use hierarchical categories
+            categories: allCategories,
+            productCategories: productCategories,
             menuConfiguration: menuConfiguration,
             siteSettings: siteSettings,
             currentPageType: 'product-category',
@@ -639,12 +670,56 @@ app.get('/store', async (req, res) => {
         const categoryFilter = req.query.category;
         const searchQuery = req.query.search;
 
+        // First fetch all categories to build hierarchy
+        const categoriesData = await fetchFromStrapi('/product-categories?populate[parentCategory]=true&populate[image]=true&sort=sortOrder:asc');
+
+        // Helper function to recursively get all subcategory slugs
+        function getAllSubcategorySlugs(categories, parentSlug) {
+            const slugs = [parentSlug];
+            const findChildren = (cats, targetSlug) => {
+                cats.forEach(cat => {
+                    if (cat.parentCategory && cat.parentCategory.slug === targetSlug) {
+                        slugs.push(cat.slug);
+                        findChildren(cats, cat.slug); // Recursively find children of children
+                    }
+                });
+            };
+            findChildren(categories, parentSlug);
+            return slugs;
+        }
+
         // Build product filter URL
         let filterParams = [];
-        if (categoryFilter) {
-            filterParams.push(`filters[productCategory][slug][$eq]=${categoryFilter}`);
-        }
-        if (searchQuery) {
+
+        if (categoryFilter && searchQuery) {
+            // When both category and search are present, we need a complex filter:
+            // (category OR subcategory1 OR subcategory2...) AND (name contains OR description contains...)
+            const allCategorySlugs = getAllSubcategorySlugs(categoriesData?.data || [], categoryFilter);
+
+            // Category filter using $in operator for multiple slugs
+            if (allCategorySlugs.length > 0) {
+                const slugsParam = allCategorySlugs.map(s => encodeURIComponent(s)).join(',');
+                filterParams.push(`filters[productCategory][slug][$in]=${slugsParam}`);
+            }
+
+            // Search filter with separate OR conditions
+            filterParams.push(`filters[$and][0][$or][0][name][$containsi]=${encodeURIComponent(searchQuery)}`);
+            filterParams.push(`filters[$and][0][$or][1][description][$containsi]=${encodeURIComponent(searchQuery)}`);
+            filterParams.push(`filters[$and][0][$or][2][shortDescription][$containsi]=${encodeURIComponent(searchQuery)}`);
+        } else if (categoryFilter) {
+            // Only category filter
+            const allCategorySlugs = getAllSubcategorySlugs(categoriesData?.data || [], categoryFilter);
+
+            if (allCategorySlugs.length === 1) {
+                filterParams.push(`filters[productCategory][slug][$eq]=${categoryFilter}`);
+            } else if (allCategorySlugs.length > 1) {
+                // Use OR filter for multiple category slugs
+                allCategorySlugs.forEach((slug, index) => {
+                    filterParams.push(`filters[$or][${index}][productCategory][slug][$eq]=${slug}`);
+                });
+            }
+        } else if (searchQuery) {
+            // Only search filter
             filterParams.push(`filters[$or][0][name][$containsi]=${encodeURIComponent(searchQuery)}`);
             filterParams.push(`filters[$or][1][description][$containsi]=${encodeURIComponent(searchQuery)}`);
             filterParams.push(`filters[$or][2][shortDescription][$containsi]=${encodeURIComponent(searchQuery)}`);
@@ -652,8 +727,7 @@ app.get('/store', async (req, res) => {
 
         const filterString = filterParams.length > 0 ? '&' + filterParams.join('&') : '';
 
-        const [categoriesData, productsData, allProductsData, siteSettings, menuConfiguration, storeData] = await Promise.all([
-            fetchFromStrapi('/product-categories?populate[parentCategory]=true&populate[image]=true&sort=sortOrder:asc'),
+        const [productsData, allProductsData, siteSettings, menuConfiguration, storeData] = await Promise.all([
             fetchFromStrapi(`/products?populate=*&sort=sortOrder:asc${filterString}`),
             fetchFromStrapi('/products?populate=productCategory&sort=sortOrder:asc'),
             getSiteSettings(),
