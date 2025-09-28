@@ -30,14 +30,6 @@
       "type": "string",
       "maxLength": 160
     },
-    "showInNavigation": {
-      "type": "boolean",
-      "default": false
-    },
-    "navigationOrder": {
-      "type": "integer",
-      "default": 0
-    },
     "showInFooter": {
       "type": "boolean",
       "default": true

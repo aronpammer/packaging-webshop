@@ -120,47 +120,47 @@
             <!-- Main Navigation -->
             <li><a href="/"><%= siteSettings.homeText || 'Home' %></a></li>
 
-            <% if (typeof productCategories !== 'undefined' && productCategories && productCategories.length > 0) { %>
-                <% productCategories.forEach(category => { %>
-                    <% if (category.childCategories && category.childCategories.length > 0) { %>
-                        <!-- Category with dropdown -->
-                        <li class="nav-item-with-dropdown">
-                            <a href="/product-category/<%= category.slug %>" class="nav-link-dropdown">
-                                <%= category.name %>
-                                <i class="fas fa-chevron-down dropdown-arrow"></i>
-                            </a>
-                            <div class="dropdown-menu">
-                                <% category.childCategories.forEach(subCategory => { %>
-                                    <% if (subCategory.childCategories && subCategory.childCategories.length > 0) { %>
-                                        <!-- Subcategory with nested dropdown -->
-                                        <div class="dropdown-item-with-submenu">
-                                            <a href="/product-category/<%= subCategory.slug %>" class="dropdown-item">
-                                                <%= subCategory.name %>
-                                                <i class="fas fa-chevron-right submenu-arrow"></i>
-                                            </a>
-                                            <div class="submenu">
-                                                <% subCategory.childCategories.forEach(subSubCategory => { %>
-                                                    <a href="/product-category/<%= subSubCategory.slug %>" class="submenu-item"><%= subSubCategory.name %></a>
-                                                <% }) %>
-                                            </div>
-                                        </div>
-                                    <% } else { %>
-                                        <!-- Regular subcategory -->
-                                        <a href="/product-category/<%= subCategory.slug %>" class="dropdown-item"><%= subCategory.name %></a>
-                                    <% } %>
-                                <% }) %>
-                            </div>
-                        </li>
-                    <% } else { %>
-                        <!-- Category without dropdown -->
-                        <li><a href="/product-category/<%= category.slug %>"><%= category.name %></a></li>
+            <% if (typeof menuConfiguration !== 'undefined' && menuConfiguration && menuConfiguration.length > 0) { %>
+                <% menuConfiguration.forEach(menuItem => { %>
+                    <% if (menuItem.isActive) { %>
+                        <% if (menuItem.children && menuItem.children.length > 0) { %>
+                            <!-- Menu item with dropdown -->
+                            <li class="nav-item-with-dropdown">
+                                <a href="<%= menuItem.url %>" class="nav-link-dropdown">
+                                    <%= menuItem.title %>
+                                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                                </a>
+                                <div class="dropdown-menu">
+                                    <% menuItem.children.forEach(subItem => { %>
+                                        <% if (subItem.isActive) { %>
+                                            <% if (subItem.children && subItem.children.length > 0) { %>
+                                                <!-- Submenu with nested dropdown -->
+                                                <div class="dropdown-item-with-submenu">
+                                                    <a href="<%= subItem.url %>" class="dropdown-item">
+                                                        <%= subItem.title %>
+                                                        <i class="fas fa-chevron-right submenu-arrow"></i>
+                                                    </a>
+                                                    <div class="submenu">
+                                                        <% subItem.children.forEach(subSubItem => { %>
+                                                            <% if (subSubItem.isActive) { %>
+                                                                <a href="<%= subSubItem.url %>" class="submenu-item"><%= subSubItem.title %></a>
+                                                            <% } %>
+                                                        <% }) %>
+                                                    </div>
+                                                </div>
+                                            <% } else { %>
+                                                <!-- Regular submenu item -->
+                                                <a href="<%= subItem.url %>" class="dropdown-item"><%= subItem.title %></a>
+                                            <% } %>
+                                        <% } %>
+                                    <% }) %>
+                                </div>
+                            </li>
+                        <% } else { %>
+                            <!-- Menu item without dropdown -->
+                            <li><a href="<%= menuItem.url %>"><%= menuItem.title %></a></li>
+                        <% } %>
                     <% } %>
-                <% }) %>
-            <% } %>
-
-            <% if (typeof navPages !== 'undefined' && navPages && navPages.length > 0) { %>
-                <% navPages.forEach(navPage => { %>
-                    <li><a href="/page/<%= navPage.slug %>"><%= navPage.title %></a></li>
                 <% }) %>
             <% } %>
         </ul>
@@ -398,6 +398,18 @@ document.addEventListener('keydown', function(event) {
     padding: 8px 12px;
     text-decoration: none;
     color: inherit;
+    border: 1px solid transparent;
+}
+
+/* Add border styles to dropdown links in bottom nav */
+.bottom-nav .nav-item-with-dropdown > a {
+    border: 1px solid transparent;
+    border-radius: 2px;
+    transition: border 0.2s ease;
+}
+
+.bottom-nav .nav-item-with-dropdown > a:hover {
+    border: 1px solid white;
 }
 
 .dropdown-arrow {
@@ -519,26 +531,15 @@ document.addEventListener('keydown', function(event) {
     display: inline-block;
 }
 
-.bottom-nav .nav-item-with-dropdown > a {
-    border: none;
-}
-
-/* Prevent dropdown from going off-screen */
-.dropdown-menu {
-    left: auto;
-    right: auto;
-}
-
+/* Prevent dropdown from going off-screen for last items */
 .nav-item-with-dropdown:last-child .dropdown-menu,
 .nav-item-with-dropdown:nth-last-child(2) .dropdown-menu {
-    right: 0;
     left: auto;
 }
 
 .nav-item-with-dropdown:last-child .submenu,
 .nav-item-with-dropdown:nth-last-child(2) .submenu {
-    right: 100%;
-    left: auto;
+    left: 96%;
 }
 
 /* Responsive adjustments */
