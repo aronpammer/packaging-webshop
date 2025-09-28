@@ -1,5 +1,20 @@
 /* Navigation Component Styles */
 
+/* Mobile-specific navigation adjustments */
+@media (max-width: 768px) {
+    /* Style adjustments for mobile nav items */
+    .nav-item {
+        display: block;
+        width: 100%;
+    }
+
+    .nav-link {
+        display: block;
+        padding: 12px 16px;
+        width: 100%;
+    }
+}
+
 /* Breadcrumb Navigation */
 .breadcrumb {
     background: var(--light-bg);

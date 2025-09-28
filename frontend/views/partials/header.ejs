@@ -109,7 +109,7 @@
     <div class="header-bottom">
         <div class="header-bottom-container">
             <ul class="bottom-nav">
-                <!-- All Button -->
+                <!-- All Button (Sidebar) -->
             <li>
                 <button class="sidebar-toggle" onclick="openSidebar()">
                     <i class="fas fa-bars"></i>
@@ -126,7 +126,7 @@
                         <% if (menuItem.children && menuItem.children.length > 0) { %>
                             <!-- Menu item with dropdown -->
                             <li class="nav-item-with-dropdown">
-                                <a href="<%= menuItem.url %>" class="nav-link-dropdown">
+                                <a href="<%= menuItem.url %>" class="nav-link-dropdown" onclick="toggleDropdown(event, this); return false;">
                                     <%= menuItem.title %>
                                     <i class="fas fa-chevron-down dropdown-arrow"></i>
                                 </a>
@@ -136,7 +136,7 @@
                                             <% if (subItem.children && subItem.children.length > 0) { %>
                                                 <!-- Submenu with nested dropdown -->
                                                 <div class="dropdown-item-with-submenu">
-                                                    <a href="<%= subItem.url %>" class="dropdown-item">
+                                                    <a href="<%= subItem.url %>" class="dropdown-item" onclick="toggleSubmenu(event, this); return false;">
                                                         <%= subItem.title %>
                                                         <i class="fas fa-chevron-right submenu-arrow"></i>
                                                     </a>
@@ -168,7 +168,27 @@
     </div>
 </header>
 
+<!-- Mobile Dropdown Backdrop -->
+<div class="mobile-dropdown-backdrop" onclick="closeAllDropdowns()"></div>
+
+
 <script>
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Ensure sidebar and overlays are hidden initially
+    const sidebar = document.getElementById('sidebar');
+    const sidebarOverlay = document.querySelector('.sidebar-overlay');
+
+    if (sidebar) {
+        sidebar.style.display = 'none';
+        sidebar.classList.remove('active');
+    }
+    if (sidebarOverlay) {
+        sidebarOverlay.style.display = 'none';
+        sidebarOverlay.classList.remove('active');
+    }
+});
+
 // Store navigation history for back button
 let navigationHistory = [];
 let currentPanel = 'main';
@@ -177,8 +197,17 @@ let currentPanel = 'main';
 function openSidebar() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.querySelector('.sidebar-overlay');
-    sidebar.classList.add('active');
-    overlay.classList.add('active');
+
+    // Show elements first
+    sidebar.style.display = 'block';
+    overlay.style.display = 'block';
+
+    // Then trigger animation
+    setTimeout(() => {
+        sidebar.classList.add('active');
+        overlay.classList.add('active');
+    }, 10);
+
     document.body.style.overflow = 'hidden';
 
     // Reset to main panel
@@ -188,12 +217,15 @@ function openSidebar() {
 function closeSidebar() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.querySelector('.sidebar-overlay');
+
     sidebar.classList.remove('active');
     overlay.classList.remove('active');
     document.body.style.overflow = '';
 
-    // Reset panels when closing
+    // Hide elements after animation
     setTimeout(() => {
+        sidebar.style.display = 'none';
+        overlay.style.display = 'none';
         resetToMainPanel();
     }, 300);
 }
@@ -359,6 +391,73 @@ function slideBackFromSub() {
 document.addEventListener('keydown', function(event) {
     if (event.key === 'Escape') {
         closeSidebar();
+        closeAllDropdowns();
+    }
+});
+
+// Mobile Dropdown Functions
+function isMobile() {
+    return window.innerWidth <= 768;
+}
+
+// Toggle dropdown on mobile
+function toggleDropdown(event, element) {
+    // Prevent default on mobile
+    if (isMobile()) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const dropdown = element.parentElement;
+        const backdrop = document.querySelector('.mobile-dropdown-backdrop');
+        const wasActive = dropdown.classList.contains('active');
+
+        // Close all other dropdowns
+        closeAllDropdowns();
+
+        if (!wasActive) {
+            // Open this dropdown
+            dropdown.classList.add('active');
+            backdrop.classList.add('active');
+            document.body.classList.add('dropdown-open');
+        }
+    }
+    // On desktop, allow normal behavior
+    return !isMobile();
+}
+
+// Toggle submenu on mobile
+function toggleSubmenu(event, element) {
+    // Prevent default on mobile
+    if (isMobile()) {
+        event.preventDefault();
+        event.stopPropagation();
+
+        const submenuItem = element.parentElement;
+        submenuItem.classList.toggle('active');
+    }
+    // On desktop, allow normal behavior
+    return !isMobile();
+}
+
+// Close all dropdowns
+function closeAllDropdowns() {
+    document.querySelectorAll('.nav-item-with-dropdown').forEach(item => {
+        item.classList.remove('active');
+    });
+    document.querySelectorAll('.dropdown-item-with-submenu').forEach(item => {
+        item.classList.remove('active');
+    });
+    const backdrop = document.querySelector('.mobile-dropdown-backdrop');
+    if (backdrop) {
+        backdrop.classList.remove('active');
+    }
+    document.body.classList.remove('dropdown-open');
+}
+
+// Handle window resize
+window.addEventListener('resize', function() {
+    if (!isMobile()) {
+        closeAllDropdowns();
     }
 });
 </script>

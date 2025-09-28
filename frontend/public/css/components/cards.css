@@ -141,29 +141,148 @@
     margin-top: 40px;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* Responsive - Tablet */
+@media (max-width: 992px) {
+    .categories-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 24px;
+    }
+
+    .products-grid {
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 24px;
+    }
+
     .card-body {
         padding: 20px;
     }
+}
 
-    .card-title {
-        font-size: 1.1rem;
+/* Responsive - Mobile */
+@media (max-width: 768px) {
+    .card {
+        border-radius: var(--border-radius);
     }
 
+    .card:hover {
+        transform: translateY(-1px);
+    }
+
+    .card-img {
+        height: 180px;
+    }
+
+    .card-body {
+        padding: 18px;
+    }
+
+    .card-title {
+        font-size: 1.15rem;
+        margin-bottom: 10px;
+    }
+
+    .card-text {
+        font-size: 0.95rem;
+        margin-bottom: 16px;
+        -webkit-line-clamp: 2;
+    }
+
+    /* Product Card Mobile */
+    .product-card .card-img {
+        height: 200px;
+    }
+
+    /* Category Card Mobile */
     .category-card {
-        padding: 30px 20px;
+        padding: 24px 18px;
     }
 
     .category-icon {
-        width: 60px;
-        height: 60px;
-        font-size: 1.5rem;
+        width: 64px;
+        height: 64px;
+        font-size: 1.6rem;
+        margin-bottom: 16px;
     }
 
-    .categories-grid,
+    .category-card h3 {
+        font-size: 1.1rem;
+        margin-bottom: 10px;
+    }
+
+    .category-card p {
+        font-size: 0.9rem;
+        margin-bottom: 20px;
+    }
+
+    /* Grid Layouts Mobile */
+    .categories-grid {
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 16px;
+    }
+
     .products-grid {
         grid-template-columns: 1fr;
         gap: 20px;
+    }
+
+    /* Badge Mobile */
+    .badge {
+        padding: 4px 10px;
+        font-size: 0.7rem;
+    }
+}
+
+/* Responsive - Small Mobile */
+@media (max-width: 480px) {
+    .card-img {
+        height: 150px;
+    }
+
+    .card-body {
+        padding: 16px;
+    }
+
+    .card-title {
+        font-size: 1.05rem;
+    }
+
+    .card-text {
+        font-size: 0.9rem;
+        line-height: 1.4;
+    }
+
+    /* Product Card Small Mobile */
+    .product-card .card-img {
+        height: 160px;
+    }
+
+    /* Category Card Small Mobile */
+    .category-card {
+        padding: 20px 16px;
+    }
+
+    .category-icon {
+        width: 56px;
+        height: 56px;
+        font-size: 1.4rem;
+        margin-bottom: 12px;
+    }
+
+    .category-card h3 {
+        font-size: 1rem;
+    }
+
+    .category-card p {
+        font-size: 0.85rem;
+    }
+
+    /* Grid Layouts Small Mobile */
+    .categories-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .products-grid {
+        gap: 16px;
     }
 }

@@ -29,6 +29,7 @@
 
 /* Sidebar Overlay */
 .sidebar-overlay {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -37,17 +38,17 @@
     background: rgba(0, 0, 0, 0.8);
     z-index: 9998;
     opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+    transition: opacity 0.3s ease;
 }
 
 .sidebar-overlay.active {
+    display: block;
     opacity: 1;
-    visibility: visible;
 }
 
 /* Main Sidebar Container */
 .sidebar {
+    display: none;
     position: fixed;
     top: 0;
     left: 0;
@@ -62,6 +63,7 @@
 }
 
 .sidebar.active {
+    display: block;
     transform: translateX(0);
 }
 
@@ -316,10 +318,18 @@
     text-decoration: underline;
 }
 
-/* Mobile Responsive */
+/* Mobile Responsive - Tablet */
+@media (max-width: 992px) {
+    .sidebar {
+        width: 320px;
+    }
+}
+
+/* Mobile Responsive - Mobile */
 @media (max-width: 768px) {
     .sidebar {
-        width: 280px;
+        width: 85%;
+        max-width: 300px;
     }
 
     .sidebar-header {
@@ -327,8 +337,31 @@
         font-size: 17px;
     }
 
+    .sidebar-header i {
+        font-size: 22px;
+    }
+
+    .sidebar-close {
+        font-size: 26px;
+        right: 16px;
+    }
+
+    .sidebar-subheader {
+        padding: 8px 16px;
+        font-size: 13px;
+        position: sticky;
+        top: 0;
+        background: #f0f2f2;
+        z-index: 10;
+    }
+
+    .panel-title {
+        font-size: 12px;
+    }
+
     .sidebar-nav a {
         padding: 12px 16px 12px 28px;
+        font-size: 13px;
     }
 
     .sidebar-section-title {
@@ -341,5 +374,113 @@
     .category-item {
         padding-left: 16px;
         padding-right: 16px;
+    }
+
+    .category-all-link {
+        font-size: 15px;
+    }
+
+    .category-subtitle {
+        font-size: 15px;
+        margin-bottom: 10px;
+    }
+
+    .subcategory-list a {
+        font-size: 13px;
+        padding: 7px 0;
+    }
+
+    .category-item a {
+        font-size: 13px;
+        padding: 9px 0;
+    }
+
+    /* Touch optimization */
+    .sidebar-nav a,
+    .subcategory-list a,
+    .category-item a {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+}
+
+/* Mobile Responsive - Small Mobile */
+@media (max-width: 480px) {
+    .sidebar {
+        width: 90%;
+        max-width: 280px;
+    }
+
+    .sidebar-header {
+        padding: 10px 36px 10px 14px;
+        font-size: 16px;
+    }
+
+    .sidebar-header i {
+        font-size: 20px;
+    }
+
+    .sidebar-close {
+        font-size: 24px;
+        right: 14px;
+        top: 6px;
+    }
+
+    .sidebar-subheader {
+        padding: 6px 14px;
+        font-size: 12px;
+    }
+
+    .sidebar-back {
+        font-size: 18px;
+    }
+
+    .panel-title {
+        font-size: 11px;
+    }
+
+    .sidebar-nav a {
+        padding: 11px 14px 11px 24px;
+        font-size: 12px;
+    }
+
+    .sidebar-nav .nav-arrow {
+        font-size: 11px;
+    }
+
+    .sidebar-section-title {
+        padding: 11px 14px;
+        font-size: 15px;
+    }
+
+    .category-section,
+    .category-main-link,
+    .category-item {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .category-all-link {
+        font-size: 14px;
+    }
+
+    .category-subtitle {
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .subcategory-list a {
+        font-size: 12px;
+        padding: 6px 0;
+    }
+
+    .subcategory-list .nav-arrow {
+        font-size: 9px;
+    }
+
+    .category-item a {
+        font-size: 12px;
+        padding: 8px 0;
     }
 }
