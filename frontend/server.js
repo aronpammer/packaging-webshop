@@ -150,23 +150,49 @@ function buildCategoryHierarchy(categories) {
 
     // First pass: create map of all categories
     categories.forEach(cat => {
+        // Use the childCategories from Strapi if available, otherwise initialize empty array
+        const childCats = cat.childCategories ?
+            (Array.isArray(cat.childCategories) ? cat.childCategories : []) :
+            [];
+
         categoryMap.set(cat.id, {
             ...cat,
-            childCategories: []
+            childCategories: childCats
         });
     });
 
-    // Second pass: build hierarchy
+    // Second pass: build hierarchy using parent relationships as fallback
+    // This ensures we catch any relationships not captured in childCategories
     categories.forEach(cat => {
         const category = categoryMap.get(cat.id);
         if (cat.parentCategory) {
             const parent = categoryMap.get(cat.parentCategory.id);
             if (parent) {
-                parent.childCategories.push(category);
+                // Only add if not already in childCategories (avoid duplicates)
+                const isAlreadyChild = parent.childCategories.some(child =>
+                    child.id === category.id || (typeof child === 'object' && child.id === category.id)
+                );
+                if (!isAlreadyChild) {
+                    parent.childCategories.push(category);
+                }
             }
         } else {
             rootCategories.push(category);
         }
+    });
+
+    // Third pass: resolve childCategories references if they're just IDs or partial objects
+    categoryMap.forEach(category => {
+        category.childCategories = category.childCategories.map(child => {
+            if (typeof child === 'number' || typeof child === 'string') {
+                // If child is just an ID, get the full category object
+                return categoryMap.get(child) || child;
+            } else if (child.id && !child.slug) {
+                // If child is a partial object, get the full category object
+                return categoryMap.get(child.id) || child;
+            }
+            return child;
+        }).filter(child => child); // Remove any null/undefined entries
     });
 
     return rootCategories;
@@ -232,7 +258,7 @@ function addCategoryChildrenRecursively(childCategories, parentMenuItemId, itemM
 async function getMenuConfiguration() {
     const [menuData, productCategoriesData] = await Promise.all([
         fetchFromStrapi('/menu-items?populate[targetPage]=true&populate[targetProductCategory]=true&populate[parentMenuItem]=true&populate[childMenuItems]=true&sort=sortOrder:asc'),
-        fetchFromStrapi('/product-categories?populate=*&sort=sortOrder:asc')
+        fetchFromStrapi('/product-categories?populate[parentCategory]=true&populate[childCategories][populate]=*&sort=sortOrder:asc')
     ]);
 
     const menuItems = menuData?.data || [];
